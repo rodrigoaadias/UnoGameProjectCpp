@@ -8,13 +8,13 @@ namespace Core
         std::string Name {};
 
     public:
-        Entity(const std::string& EntityName);
+        Entity(const std::string& entityName);
         const std::string& GetName();
 
         virtual void Begin();
         virtual void Tick();
         virtual void Destroy();
 
-        ~Entity();
+        virtual ~Entity();
     };
 }

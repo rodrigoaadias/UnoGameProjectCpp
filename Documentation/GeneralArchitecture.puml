@@ -19,10 +19,10 @@ package Core
         void Tick();
         void Destroy();  
     }
-    
+
     Engine --> Entity
     Entity --> Engine
-    
+
     class Core{
         void RunEngine();
         void CloseApp();
@@ -35,28 +35,32 @@ package UnoApp
 {
     class GameLifecycleController{
         Match* CurrentMatch;
-        StartNewGame();
-        CloseGame();
+        void StartNewGame();
+        void Replay();
+        void CloseGame();
     }
     
     class Player{
         std::vector<Card*> CardsOnHand;
+        bool HasYelled;
         int GetAmountOfCardsOnHand();
         bool PlayTurn();
         void BuyCards();
         void BuyDeckCard();
         void BuyTossedCard();
+        CanYell();
+        Yell();
     }
 
     class DeckController{
         const std::vector<Card*> AllCards;
         std::stack<Card*> TossedCards;
         std::stack<Card*> CardsOnDeck;
-        CreateCards();
-        ShuffleDeckCards();
-        AddCardToDeck(Card* card);
-        IsDeckEmpty();
-        ShuffleTossedCardsBackToDeck();
+        void CreateCards();
+        void ShuffleDeckCards();
+        void AddCardToDeck(Card* card);
+        bool IsDeckEmpty();
+        void ShuffleTossedCardsBackToDeck();
         Card* GetTopCard();
     }
 
@@ -69,60 +73,35 @@ package UnoApp
         int CurrentTurn;
         TurnFlow Flow;
         std::vector<Player*> JoinedPlayers;              
-        StartNewMatch();
-        JoinPlayers();
-        CreateDeck();
-        SortCardsToPlayers();
-        SortFirstPlayerTurn();
-        SetPlayerTurn();  
-        ExecuteCardAction();      
-        ExecuteCardTossAction();  
-        ReverseFlow();
-        CanYell();
-        Yell();
-    }
-    
-    enum Color{
-        Blue
-        Yellow
-        Red
-        Green
+        void StartNewMatch();
+        void JoinPlayers();
+        void CreateDeck();
+        void SortCardsToPlayers();
+        void SortFirstPlayerTurn();
+        void PlayTurn();
+        void ExecuteCardAction();      
+        void ExecuteCardTossAction();  
+        void SkipTurn();
+        void ReverseFlow();
+        bool IsMatchEnded();
+        void FinishMatch();
     }
 
-    abstract class Card{
-        Color color;
-    }
-
-    class NumberCard{
-        int number;
-    }
-    
-    class MustBuyCard{
-        int amountToBuy;
-    }
-    
-    class ReverseCard{
-    }
-
-    class JumpCard{
+    class Card{
     }
 
     Entity <|-- GameLifecycleController
-    GameLifecycleController -> Match
-    Color <- Card
-    Card <|--- NumberCard
-    Card <|--- MustBuyCard
-    Card <|--- ReverseCard
-    Card <|--- JumpCard
-    
+    GameLifecycleController --> Match
+
     Entity <|-- Player
     Entity <|-- Match
+    Entity <|-- DeckController
 
     Player -> DeckController
-    Match --> Player
-    Match --> DeckController
+    Match ---> Player
+    Match ---> DeckController
     Match -> TurnFlow
-    Match -> Card
+    Match --> Card
 }
 
 @enduml

@@ -7,9 +7,9 @@
 
 namespace Core
 {
-    Entity::Entity(const std::string& EntityName)
+    Entity::Entity(const std::string& entityName)
     {
-        Name = EntityName;
+        Name = entityName;
         Engine::InitEntity(this);
     }
 

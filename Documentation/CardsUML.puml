@@ -1,6 +1,11 @@
 @startuml
 'https://plantuml.com/class-diagram
 
+package Core{
+    class Entity{
+    }
+}
+
 package UnoApp{
     enum Color{
         Blue
@@ -16,17 +21,18 @@ package UnoApp{
     class NumberCard{
         int number;
     }
-    
+
     class MustBuyCard{
         int amountToBuy;
     }
-    
+
     class ReverseCard{
     }
 
     class JumpCard{
     }
-    
+
+    Entity <|-- Card
     Color <- Card
     Card <|--- NumberCard
     Card <|--- MustBuyCard
@@ -37,7 +43,7 @@ package UnoApp{
         void Execute(Match CurrentMatch);
     }
 
-    interface ITossAction{
+    interface ITossAction{    
         void Execute(Match CurrentMatch);
     }
 
@@ -47,7 +53,10 @@ package UnoApp{
     
     class Match{
     }
-    
+
+    note bottom of ITossAction : This is supposed to be called before the turn ends
+    note bottom of IAction : This is supposed to be called before the turn begins
+
     IAction --> Match
     ITossAction --> Match
 }

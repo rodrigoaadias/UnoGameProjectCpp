@@ -1,8 +1,8 @@
 ﻿#include "Player.h"
 #include <iostream>
 
-Player::Player(std::string Name)
-    : Entity(Name)
+Player::Player(const std::string& name)
+    : Entity(name)
 {
-    std::cout << "Creating Player: " << Name << std::endl;
+    std::cout << "Player Created: " << name << std::endl;
 }

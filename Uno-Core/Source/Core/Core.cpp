@@ -1,7 +1,4 @@
 #include "Core.h"
-
-#include <iostream>
-
 #include "Public/Engine.h"
 
 namespace Core {
@@ -9,19 +6,18 @@ namespace Core {
 	void RunEngine()
 	{
 		Engine::Reserve(100);
-		WantsToClose = false;
+		WANTS_TO_CLOSE = false;	    
 
-		while (!WantsToClose)
+		while (!WANTS_TO_CLOSE)
 		{
 			Engine::Tick();
 		}
 
 		Engine::ClearEntities();
-		std::cin.get();
 	}
 
 	void CloseApp()
 	{
-		WantsToClose = true;
-	}	
+		WANTS_TO_CLOSE = true;
+	}
 }

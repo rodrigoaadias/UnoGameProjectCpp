@@ -4,5 +4,5 @@
 class Player : Core::Entity
 {
 public:
-    Player(std::string Name);
+    Player(const std::string& name);
 };

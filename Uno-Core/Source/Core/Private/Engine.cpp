@@ -5,10 +5,10 @@ void Engine::Reserve(int size)
     Entities.reserve(size);
 }
 
-void Engine::InitEntity(Core::Entity* NewEntity)
+void Engine::InitEntity(Core::Entity* newEntity)
 {
-    NewEntity->Begin();
-    Entities.push_back(NewEntity);
+    newEntity->Begin();
+    Entities.push_back(newEntity);
 }
 
 void Engine::ClearEntities()
@@ -21,11 +21,11 @@ void Engine::ClearEntities()
     Entities.clear();
 }
 
-void Engine::RemoveEntity(Core::Entity* EntityToRemove)
+void Engine::RemoveEntity(const Core::Entity* entityToRemove)
 {
     for (int i = 0; i < Entities.size() ; i++)
     {
-        if(Entities[i] == EntityToRemove)
+        if(Entities[i] == entityToRemove)
         {
             Entities.erase(Entities.begin() + i);
             break;
