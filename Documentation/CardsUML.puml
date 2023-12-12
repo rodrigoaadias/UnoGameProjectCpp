@@ -1,0 +1,54 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+package UnoApp{
+    enum Color{
+        Blue
+        Yellow
+        Red
+        Green
+    }
+
+    abstract class Card{
+        Color color;
+    }
+
+    class NumberCard{
+        int number;
+    }
+    
+    class MustBuyCard{
+        int amountToBuy;
+    }
+    
+    class ReverseCard{
+    }
+
+    class JumpCard{
+    }
+    
+    Color <- Card
+    Card <|--- NumberCard
+    Card <|--- MustBuyCard
+    Card <|--- ReverseCard
+    Card <|--- JumpCard
+
+    interface IAction{
+        void Execute(Match CurrentMatch);
+    }
+
+    interface ITossAction{
+        void Execute(Match CurrentMatch);
+    }
+
+    MustBuyCard ..|> IAction
+    JumpCard ..|> IAction
+    ReverseCard ..|> ITossAction
+    
+    class Match{
+    }
+    
+    IAction --> Match
+    ITossAction --> Match
+}
+@enduml

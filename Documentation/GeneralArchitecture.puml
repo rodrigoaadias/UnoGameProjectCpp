@@ -25,9 +25,104 @@ package Core
     
     class Core{
         void RunEngine();
+        void CloseApp();
     }
 
     Core --> Engine
+}
+
+package UnoApp
+{
+    class GameLifecycleController{
+        Match* CurrentMatch;
+        StartNewGame();
+        CloseGame();
+    }
+    
+    class Player{
+        std::vector<Card*> CardsOnHand;
+        int GetAmountOfCardsOnHand();
+        bool PlayTurn();
+        void BuyCards();
+        void BuyDeckCard();
+        void BuyTossedCard();
+    }
+
+    class DeckController{
+        const std::vector<Card*> AllCards;
+        std::stack<Card*> TossedCards;
+        std::stack<Card*> CardsOnDeck;
+        CreateCards();
+        ShuffleDeckCards();
+        AddCardToDeck(Card* card);
+        IsDeckEmpty();
+        ShuffleTossedCardsBackToDeck();
+        Card* GetTopCard();
+    }
+
+    enum TurnFlow{
+        CLOCKWISE
+        ANTI-CLOCKWISE
+    }
+
+    class Match{    
+        int CurrentTurn;
+        TurnFlow Flow;
+        std::vector<Player*> JoinedPlayers;              
+        StartNewMatch();
+        JoinPlayers();
+        CreateDeck();
+        SortCardsToPlayers();
+        SortFirstPlayerTurn();
+        SetPlayerTurn();  
+        ExecuteCardAction();      
+        ExecuteCardTossAction();  
+        ReverseFlow();
+        CanYell();
+        Yell();
+    }
+    
+    enum Color{
+        Blue
+        Yellow
+        Red
+        Green
+    }
+
+    abstract class Card{
+        Color color;
+    }
+
+    class NumberCard{
+        int number;
+    }
+    
+    class MustBuyCard{
+        int amountToBuy;
+    }
+    
+    class ReverseCard{
+    }
+
+    class JumpCard{
+    }
+
+    Entity <|-- GameLifecycleController
+    GameLifecycleController -> Match
+    Color <- Card
+    Card <|--- NumberCard
+    Card <|--- MustBuyCard
+    Card <|--- ReverseCard
+    Card <|--- JumpCard
+    
+    Entity <|-- Player
+    Entity <|-- Match
+
+    Player -> DeckController
+    Match --> Player
+    Match --> DeckController
+    Match -> TurnFlow
+    Match -> Card
 }
 
 @enduml
