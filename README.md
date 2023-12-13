@@ -44,7 +44,7 @@ Avoid comments as much as possible.
 Comments, such as code, needs to be maintainable, and can be often forgotten outdated. That's the reason they should be avoided. The code must be clear an self-explained, favouring readability. Clean code practices will help reach this goal.
 Acceptable comments are:
 
-* Summaries on pubic methods that are meant to be used by other developers (such as a plugin or service)
+* Summaries on public methods that are meant to be used by other developers (such as a plugin or service)
   * Do not use extensively. If the method is self-explanatory, there’s no need for a summary
 * Brief explanation of complex algorithms that are very hard to understand
 
