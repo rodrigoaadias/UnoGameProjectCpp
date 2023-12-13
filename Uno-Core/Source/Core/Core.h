@@ -1,7 +1,8 @@
 #pragma once
 
 namespace Core {
+	inline bool WANTS_TO_CLOSE = false;
 
-	void PrintHelloWorld();
-
+	void RunEngine();
+	void CloseApp();
 }

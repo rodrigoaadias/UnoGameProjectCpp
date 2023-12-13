@@ -1,0 +1,107 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+package Core
+{
+    class Engine{
+        static std::vector<Entity*> Entities;
+        static void Reserve(int size);
+        static void InitEntity(Core::Entity* NewEntity);
+        static void ClearEntities();
+        static void RemoveEntity(Core::Entity* EntityToRemove);
+        static void Tick();
+    }
+
+    class Entity{        
+        Entity(const std::string& EntityName);
+        const std::string& GetName();
+        void Begin();
+        void Tick();
+        void Destroy();  
+    }
+
+    Engine --> Entity
+    Entity --> Engine
+
+    class Core{
+        void RunEngine();
+        void CloseApp();
+    }
+
+    Core --> Engine
+}
+
+package UnoApp
+{
+    class GameLifecycleController{
+        Match* CurrentMatch;
+        void StartNewGame();
+        void Replay();
+        void CloseGame();
+    }
+    
+    class Player{
+        std::vector<Card*> CardsOnHand;
+        bool HasYelled;
+        int GetAmountOfCardsOnHand();
+        bool PlayTurn();
+        void BuyCards();
+        void BuyDeckCard();
+        void BuyTossedCard();
+        CanYell();
+        Yell();
+    }
+
+    class DeckController{
+        const std::vector<Card*> AllCards;
+        std::stack<Card*> TossedCards;
+        std::stack<Card*> CardsOnDeck;
+        void CreateCards();
+        void ShuffleDeckCards();
+        void AddCardToDeck(Card* card);
+        bool IsDeckEmpty();
+        void ShuffleTossedCardsBackToDeck();
+        Card* GetTopCard();
+    }
+
+    enum TurnFlow{
+        CLOCKWISE
+        ANTI-CLOCKWISE
+    }
+
+    class Match{    
+        int CurrentTurn;
+        TurnFlow Flow;
+        std::vector<Player*> JoinedPlayers;              
+        void StartNewMatch();
+        void JoinPlayers();
+        void CreateDeck();
+        void SortCardsToPlayers();
+        void SortFirstPlayerTurn();
+        void PlayTurn();
+        void ExecuteCardAction();      
+        void ExecuteCardTossAction();  
+        void SkipTurn();
+        void ReverseFlow();
+        bool IsMatchEnded();
+        void FinishMatch();
+    }
+
+    class Card{
+    }
+
+    Entity <|-- GameLifecycleController
+    GameLifecycleController --> Match
+
+    Entity <|-- Player
+    Entity <|-- Match
+    Entity <|-- DeckController
+
+    Player -> DeckController
+    Match ---> Player
+    Match ---> DeckController
+    Match -> TurnFlow
+    Match --> Card
+}
+
+@enduml

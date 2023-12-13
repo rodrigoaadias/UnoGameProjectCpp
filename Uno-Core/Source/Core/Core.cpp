@@ -1,13 +1,23 @@
 #include "Core.h"
-
-#include <iostream>
+#include "Public/Engine.h"
 
 namespace Core {
 
-	void PrintHelloWorld()
+	void RunEngine()
 	{
-		std::cout << "Hello World!\n";
-		std::cin.get();
+		Engine::Reserve(100);
+		WANTS_TO_CLOSE = false;	    
+
+		while (!WANTS_TO_CLOSE)
+		{
+			Engine::Tick();
+		}
+
+		Engine::ClearEntities();
 	}
 
+	void CloseApp()
+	{
+		WANTS_TO_CLOSE = true;
+	}
 }
