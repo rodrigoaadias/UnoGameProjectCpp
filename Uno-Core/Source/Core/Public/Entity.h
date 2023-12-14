@@ -1,4 +1,5 @@
 #pragma once
+#include <memory>
 #include <string>
 
 namespace Core
@@ -13,7 +14,8 @@ namespace Core
 
         virtual void Begin();
         virtual void Tick();
-        virtual void Destroy();
+
+        void Destroy(std::shared_ptr<Entity>& entity);
 
         virtual ~Entity();
     };

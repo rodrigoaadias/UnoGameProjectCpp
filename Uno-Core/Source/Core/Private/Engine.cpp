@@ -1,33 +1,42 @@
 ﻿#include "../Public/Engine.h"
 
-void Engine::Reserve(int size)
+void Engine::Reserve(const int size)
 {
     Entities.reserve(size);
 }
 
-void Engine::InitEntity(Core::Entity* newEntity)
+void Engine::InitEntity(const std::weak_ptr<Core::Entity>& newEntity)
 {
-    newEntity->Begin();
+    const std::shared_ptr<Core::Entity> sharedNewEntity = newEntity.lock(); 
     Entities.push_back(newEntity);
+    sharedNewEntity->Begin();
 }
 
 void Engine::ClearEntities()
 {
-    for (const Core::Entity* Entity : Entities)
+    for (const std::weak_ptr<Core::Entity>& entity : Entities)
     {
-        delete Entity;
+        if(entity.expired())
+        {
+            continue;
+        }
+
+        std::shared_ptr<Core::Entity> sharedEntity = entity.lock();
+        RemoveEntity(sharedEntity);
     }
 
     Entities.clear();
 }
 
-void Engine::RemoveEntity(const Core::Entity* entityToRemove)
+void Engine::RemoveEntity(std::shared_ptr<Core::Entity>& entityToRemove)
 {
-    for (int i = 0; i < Entities.size() ; i++)
+    for (int i = 0; i < static_cast<int>(Entities.size()) ; i++)
     {
-        if(Entities[i] == entityToRemove)
+        std::shared_ptr<Core::Entity> sharedRef = Entities[i].lock();
+        if(sharedRef == entityToRemove)
         {
             Entities.erase(Entities.begin() + i);
+            entityToRemove.reset();
             break;
         }
     }
@@ -35,15 +44,16 @@ void Engine::RemoveEntity(const Core::Entity* entityToRemove)
 
 void Engine::Tick()
 {
-    for (int i = 0; i < Entities.size() ; i++)
+    for (int i = 0; i < static_cast<int>(Entities.size()) ; i++)
     {
-        if(Entities[i] == nullptr)
+        if(Entities[i].expired())
         {
             Entities.erase(Entities.begin() + i);
             i--;
             break;
         }
 
-        Entities[i]->Tick();
+        const std::shared_ptr<Core::Entity> sharedEntity = Entities[i].lock();
+        sharedEntity->Tick();
     }
 }

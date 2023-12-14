@@ -1,7 +1,5 @@
 #include "../Public/Entity.h"
-
 #include <iostream>
-
 #include "Core/Public/Engine.h"
 #include <string>
 
@@ -10,7 +8,6 @@ namespace Core
     Entity::Entity(const std::string& entityName)
     {
         Name = entityName;
-        Engine::InitEntity(this);
     }
 
     void Entity::Begin()
@@ -19,10 +16,9 @@ namespace Core
     void Entity::Tick()
     { }
 
-    void Entity::Destroy()
+    void Entity::Destroy(std::shared_ptr<Entity>& entity)
     {
-        Engine::RemoveEntity(this);
-        delete this;
+        Engine::RemoveEntity(entity);
     }
 
     Entity::~Entity()
