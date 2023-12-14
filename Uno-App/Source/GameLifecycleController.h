@@ -1,10 +1,10 @@
 ﻿#pragma once
-#include <memory>
+#include "Core/EntityPtr.h"
 #include "Core/Public/Entity.h"
 
 class Player;
 
-class GameLifecycleController : public Core::Entity
+class GameLifecycleController : public Entity
 {
 public:
     GameLifecycleController(const std::string& name);
@@ -12,5 +12,5 @@ public:
     void Tick() override;
 
     int Counter = 0;
-    std::shared_ptr<Player> PlayerOne;
+    EntityPtr<Player> PlayerOne;
 };

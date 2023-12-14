@@ -7,24 +7,27 @@
 class Engine
 {
 public:
-    inline static std::vector<std::weak_ptr<Core::Entity>> Entities {};
+    inline static std::vector<std::weak_ptr<Entity>> Entities {};
 
     template <typename TElement>
-    static std::shared_ptr<TElement> CreateEntity(const std::string& entityName);
+    static EntityPtr<TElement> CreateEntity(const std::string& entityName);
 
     static void Reserve(int size);
-    static void InitEntity(const std::weak_ptr<Core::Entity>& newEntity);
+    static void InitEntity(const std::weak_ptr<Entity>& newEntity);
     static void ClearEntities();
-    static void RemoveEntity(std::shared_ptr<Core::Entity>& entityToRemove);
-    static void Tick();
+    static void RemoveEntity(EntityPtr<Entity>& entityToRemove);
+    static void Tick();  
+
+    template <class TElement> static void Destroy(EntityPtr<TElement>& entity)
+    {
+        entity.reset();     
+    }
 };
 
-template <typename  TElement> std::shared_ptr<TElement> Engine::CreateEntity(const std::string& entityName)
+template <typename TElement> EntityPtr<TElement> Engine::CreateEntity(const std::string& entityName)
 {
-    std::shared_ptr<Core::Entity> newEntity = std::make_shared<TElement>(entityName);
-    std::weak_ptr<Core::Entity> weakEntityPtr { newEntity };
-
-    InitEntity(weakEntityPtr);
-    std::shared_ptr<TElement> returnValue = std::dynamic_pointer_cast<TElement>(newEntity);
-    return returnValue;
+    EntityPtr<TElement> newEntity = EntityPtr<TElement>::MakeEntityPtr(entityName);
+    EntityPtr<Entity> entityCast = static_cast<EntityPtr<Entity>>(newEntity);
+    InitEntity(entityCast.get());
+    return newEntity;
 }

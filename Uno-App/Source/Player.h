@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "Core/Public/Entity.h"
 
-class Player : public Core::Entity
+class Player : public Entity
 {
 public:
     Player(const std::string& name);

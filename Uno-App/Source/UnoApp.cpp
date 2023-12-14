@@ -4,6 +4,6 @@
 
 int main()
 {
-    std::shared_ptr<GameLifecycleController> gameLifecycleController = Engine::CreateEntity<GameLifecycleController>("Lifecycle Controller");
+    EntityPtr<GameLifecycleController> gameLifecycleController = Engine::CreateEntity<GameLifecycleController>("Lifecycle Controller");
     Core::RunEngine();
 }
