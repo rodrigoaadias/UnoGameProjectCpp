@@ -11,6 +11,5 @@ public:
     void Begin() override;
     void Tick() override;
 
-    int Counter = 0;
     EntityPtr<Player> PlayerOne;
 };
