@@ -12,13 +12,13 @@ class Match : public Entity
     ETurnFlow Flow;
     std::vector<EntityPtr<Player>> JoinedPlayers;
 
-    EntityPtr<Player> CreatePlayer(int index);
+    EntityPtr<Player> CreatePlayer(const int& index);
 
 public:
     Match(const std::string& matchName);
 
     void StartNewMatch();
-    void JoinPlayers(int number);
+    void JoinPlayers(const int& number);
     void CreateDeck();
     void SortCardsToPlayers();
     void SortFirstPlayerTurn();

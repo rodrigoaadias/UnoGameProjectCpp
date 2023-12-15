@@ -6,6 +6,6 @@ class Card : public Entity
 {
     EColor Color;
 public:
-    explicit Card(const std::string& name, EColor color);
+    Card(const std::string& name, EColor color);
     EColor GetColor() const { return Color; }
 };

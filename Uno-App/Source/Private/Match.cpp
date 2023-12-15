@@ -19,7 +19,7 @@ void Match::StartNewMatch()
     JoinPlayers(numPlayers);
 }
 
-void Match::JoinPlayers(int number)
+void Match::JoinPlayers(const int& number)
 {
     for (int i=0; i < number; i++)
     {
@@ -27,9 +27,9 @@ void Match::JoinPlayers(int number)
     }
 }
 
-EntityPtr<Player> Match::CreatePlayer(int index)
+EntityPtr<Player> Match::CreatePlayer(const int& index)
 {
-    std::string playerName = Core::GetInput<std::string>("Player " + std::to_string(index) + ": What's your name? ");
+    const auto playerName = Core::GetInput<std::string>("Player " + std::to_string(index) + ": What's your name? ");
     return EntityPtr<Player>::MakeEntityPtr(playerName);
 }
 

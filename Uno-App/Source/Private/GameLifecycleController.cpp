@@ -19,7 +19,7 @@ void GameLifecycleController::Tick()
     Entity::Tick();
     EntityPtr<Match> match = Engine::CreateEntity<Match>("Test Match");
     match->StartNewMatch();
-    
+
     Core::LogMessage("Press any key to quit the game");
     std::cin.get();
     std::cin.get();
