@@ -30,6 +30,15 @@ void Match::JoinPlayers(const int& number)
 EntityPtr<Player> Match::CreatePlayer(const int& index)
 {
     const auto playerName = Core::GetInput<std::string>("Player " + std::to_string(index) + ": What's your name? ");
+    for (EntityPtr<Player> current : JoinedPlayers)
+    {
+        if(current->GetName() == playerName)
+        {
+            Core::LogMessage("You can't assign your name as " + playerName + " because another player already has this name");
+            return CreatePlayer(index);
+        }
+    }
+
     return EntityPtr<Player>::MakeEntityPtr(playerName);
 }
 

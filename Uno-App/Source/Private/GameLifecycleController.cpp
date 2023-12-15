@@ -22,7 +22,6 @@ void GameLifecycleController::Tick()
 
     Core::LogMessage("Press any key to quit the game");
     std::cin.get();
-    std::cin.get();
 
     Core::CloseApp();
 }
