@@ -3,20 +3,19 @@
 #include <iostream>
 #include <memory>
 #include <ostream>
-#include "Public/Entity.h"
 
 template <class TElement>
 class EntityPtr
 {
 public:
-    std::shared_ptr<Entity>* Instance {nullptr};
+    std::shared_ptr<TElement>* Instance {nullptr};
     std::shared_ptr<int> RefCount {};
 
-    EntityPtr(std::shared_ptr<Entity>* inInstance)
+    EntityPtr(std::shared_ptr<TElement>* inInstance)
         : Instance(inInstance), RefCount{std::make_shared<int>()}
     { }
 
-    EntityPtr(std::shared_ptr<Entity>* inInstance, const std::shared_ptr<int>& inRefCount)
+    EntityPtr(std::shared_ptr<TElement>* inInstance, const std::shared_ptr<int>& inRefCount)
         : Instance(inInstance), RefCount{inRefCount}
     { }
 
@@ -25,12 +24,12 @@ public:
     template <typename ...TArgs>
     static EntityPtr MakeEntityPtr(TArgs ...args)
     {
-        return EntityPtr(new std::shared_ptr<Entity>( new TElement(args...) ));
+        return EntityPtr(new std::shared_ptr<TElement>( new TElement(args...) ));
     }
 
     std::shared_ptr<TElement> operator -> ()
     {
-        assert(this.IsValid());
+        assert(IsValid());
         return *Instance;
     }
 
@@ -40,14 +39,14 @@ public:
         std::shared_ptr<TOther> castedInstance = std::dynamic_pointer_cast<TOther>(*Instance);
         if(castedInstance)
         {
-            EntityPtr<TOther> other = {Instance, RefCount};
+            EntityPtr<TOther> other = { reinterpret_cast<std::shared_ptr<TOther>*>(Instance), RefCount};
             return other;
         }
 
         return EntityPtr<TOther>{};
     }
 
-    bool IsValid()
+    bool IsValid() const
     {
         return Instance && *Instance != nullptr;
     }
@@ -55,6 +54,7 @@ public:
     std::weak_ptr<TElement> get()
     {        
         assert(IsValid());
+        
         return std::weak_ptr<TElement>{ *Instance }; 
     }
 

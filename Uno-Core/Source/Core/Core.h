@@ -1,4 +1,6 @@
 #pragma once
+#include <iostream>
+#include <string>
 
 class Core {
     inline static bool WantsToClose = false;
@@ -6,4 +8,20 @@ class Core {
 public:
 	static void RunEngine();
 	static void CloseApp();
+
+    template <typename TData>
+    static TData GetInput(const std::string& message)
+    {
+        TData returnValue;
+        std::cout << message;
+        std::cin >> returnValue;
+        std::cout << std::endl;
+
+        return returnValue;
+    }
+
+    static void LogMessage(const std::string& message)
+    {
+        std::cout << message << std::endl;
+    }
 };

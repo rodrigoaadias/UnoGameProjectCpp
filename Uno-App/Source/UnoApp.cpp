@@ -1,4 +1,4 @@
-#include "GameLifecycleController.h"
+#include "Public/GameLifecycleController.h"
 #include "Core/Core.h"
 #include "Core/Public/Engine.h"
 
