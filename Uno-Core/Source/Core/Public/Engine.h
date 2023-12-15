@@ -15,7 +15,7 @@ public:
     static void Reserve(int size);
     static void InitEntity(const std::weak_ptr<Entity>& newEntity);
     static void ClearEntities();
-    static void RemoveEntity(EntityPtr<Entity>& entityToRemove);
+    static void Destroy(EntityPtr<Entity>& entityToRemove);
     static void Tick();  
 
     template <class TElement> static void Destroy(EntityPtr<TElement>& entity)

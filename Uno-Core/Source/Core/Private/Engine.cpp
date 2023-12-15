@@ -17,7 +17,7 @@ void Engine::ClearEntities()
     Entities.clear();
 }
 
-void Engine::RemoveEntity(EntityPtr<Entity>& entityToRemove)
+void Engine::Destroy(EntityPtr<Entity>& entityToRemove)
 {
     entityToRemove.reset();
 }
