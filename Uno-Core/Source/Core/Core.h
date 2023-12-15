@@ -1,8 +1,9 @@
 #pragma once
 
-namespace Core {
-	inline bool WANTS_TO_CLOSE = false;
+class Core {
+    inline static bool WantsToClose = false;
 
-	void RunEngine();
-	void CloseApp();
-}
+public:
+	static void RunEngine();
+	static void CloseApp();
+};

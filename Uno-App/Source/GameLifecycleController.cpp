@@ -1,10 +1,15 @@
 ﻿#include "GameLifecycleController.h"
 #include <iostream>
 #include "Core/Core.h"
+#include "Core/Public/Engine.h"
 
-GameLifecycleController::GameLifecycleController()
-    : Entity("Lifecycle Controller")
-{    
+GameLifecycleController::GameLifecycleController(const std::string& name)
+    : Entity(name)
+{}
+
+void GameLifecycleController::Begin()
+{
+    Entity::Begin();
 }
 
 void GameLifecycleController::Tick()

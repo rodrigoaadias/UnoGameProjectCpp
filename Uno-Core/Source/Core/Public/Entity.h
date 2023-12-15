@@ -1,20 +1,17 @@
 #pragma once
 #include <string>
 
-namespace Core
+class Entity
 {
-    class Entity
-    {
-        std::string Name {};
+    std::string Name {};
 
-    public:
-        Entity(const std::string& entityName);
-        const std::string& GetName();
+public:
+    Entity(const std::string& entityName);
+    const std::string& GetName();
 
-        virtual void Begin();
-        virtual void Tick();
-        virtual void Destroy();
+    virtual void Begin();
+    virtual void Tick();
 
-        virtual ~Entity();
-    };
-}
+    virtual ~Entity();
+};
+

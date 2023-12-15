@@ -1,9 +1,15 @@
 ﻿#pragma once
+#include "Core/EntityPtr.h"
 #include "Core/Public/Entity.h"
 
-class GameLifecycleController : Core::Entity
+class Player;
+
+class GameLifecycleController : public Entity
 {
 public:
-    GameLifecycleController();
+    GameLifecycleController(const std::string& name);
+    void Begin() override;
     void Tick() override;
+
+    EntityPtr<Player> PlayerOne;
 };
