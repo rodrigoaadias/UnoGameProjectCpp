@@ -1,7 +1,9 @@
-﻿#include "GameLifecycleController.h"
+﻿#include "Public/GameLifecycleController.h"
 #include <iostream>
 #include "Core/Core.h"
 #include "Core/Public/Engine.h"
+#include "Public/DeckController.h"
+#include "Public/Match.h"
 
 GameLifecycleController::GameLifecycleController(const std::string& name)
     : Entity(name)
@@ -15,7 +17,10 @@ void GameLifecycleController::Begin()
 void GameLifecycleController::Tick()
 {
     Entity::Tick();
-    std::cout << "Press any key to quit the game" << std::endl;
+    EntityPtr<Match> match = Engine::CreateEntity<Match>("Test Match");
+    match->StartNewMatch();
+    
+    Core::LogMessage("Press any key to quit the game");
     std::cin.get();
 
     Core::CloseApp();
