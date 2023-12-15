@@ -11,14 +11,13 @@ class EntityPtr
 public:
     std::shared_ptr<Entity>* Instance {nullptr};
     std::shared_ptr<int> RefCount {};
-    std::string EntityName;
 
     EntityPtr(std::shared_ptr<Entity>* inInstance)
-        : Instance(inInstance), RefCount{std::make_shared<int>()}, EntityName{Instance->get()->GetName()}
+        : Instance(inInstance), RefCount{std::make_shared<int>()}
     { }
 
     EntityPtr(std::shared_ptr<Entity>* inInstance, const std::shared_ptr<int>& inRefCount)
-        : Instance(inInstance), RefCount{inRefCount}, EntityName{Instance->get()->GetName()}
+        : Instance(inInstance), RefCount{inRefCount}
     { }
 
     EntityPtr() = default;
@@ -32,7 +31,7 @@ public:
     std::shared_ptr<TElement> operator -> ()
     {
         assert(this.IsValid());
-        return this->Instance;
+        return *Instance;
     }
 
     template <typename TOther>
@@ -70,7 +69,6 @@ public:
         {
             assert(Instance);
             Instance->reset();
-            std::cout << "Destructing Entity Pointer for " << EntityName << std::endl;
         }
     }
 };
