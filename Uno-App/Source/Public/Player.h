@@ -15,4 +15,5 @@ public:
 
     void AddCardToHand(std::weak_ptr<Card> card);
     std::string ToString();
+    std::vector<std::weak_ptr<Card>>& GetCards();
 };

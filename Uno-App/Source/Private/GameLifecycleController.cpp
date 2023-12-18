@@ -12,14 +12,31 @@ GameLifecycleController::GameLifecycleController(const std::string& name)
 void GameLifecycleController::Begin()
 {
     Entity::Begin();
+    Core::LogMessage("Welcome to the UNO GAME - PLUS PLUS YOUR LIFE\n\n");
+    Core::LogMessage("Do you like to start a new Match?");
+    int choice = Core::GetInput<int>("1 - Yes;  2- No, quit the game: ");
+    if(choice == 1)
+    {
+        const auto matchName = Core::GetInput<std::string>("Give a name to your match: ");
+        CurrentMatch = Engine::CreateEntity<Match>(matchName);
+    }
 }
 
 void GameLifecycleController::Tick()
 {
     Entity::Tick();
-    EntityPtr<Match> match = Engine::CreateEntity<Match>("Test Match");
-    match->StartNewMatch();
 
+    if(CurrentMatch.IsValid())
+    {
+        if(CurrentMatch->IsMatchEnded())
+        {
+            Engine::Destroy(CurrentMatch);
+        }
+
+        return;
+    }
+
+    Core::LogMessage("THANK YOU FOR PLAYING!");
     Core::LogMessage("Press any key to quit the game");
     std::cin.get();
 
