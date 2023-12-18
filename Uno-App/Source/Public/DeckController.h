@@ -25,6 +25,6 @@ public:
     void AddCardToDeck(EntityPtr<Card>& card);
     bool IsDeckEmpty() const;
     void ShuffleTossedCardsBackToDeck();
-    std::weak_ptr<Card> GetCardFromDeck();
+    std::weak_ptr<Card> BuyCardFromDeck();
     std::weak_ptr<Card> GetLastTossedCard();
 };

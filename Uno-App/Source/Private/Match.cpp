@@ -6,7 +6,9 @@
 
 Match::Match(const std::string& matchName)
     : Entity{matchName}, CurrentTurn{0}, Flow{ETurnFlow::Clockwise}
-{ }
+{
+    JoinedPlayers.reserve(10);
+}
 
 void Match::StartNewMatch()
 {
@@ -53,7 +55,15 @@ void Match::CreateDeck()
 
 void Match::SortCardsToPlayers()
 {
-    Deck->ShuffleDeckCards();    
+    Deck->ShuffleDeckCards();
+
+    for (auto player : JoinedPlayers)
+    {
+        for (int i=0; i < 7; i++)
+        {
+            player->AddCardToHand(Deck->BuyCardFromDeck());
+        }
+    }
 }
 
 void Match::SortFirstPlayerTurn()

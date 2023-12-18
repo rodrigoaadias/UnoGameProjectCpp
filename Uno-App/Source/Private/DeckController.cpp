@@ -11,12 +11,13 @@
 DeckController::DeckController(const std::string& name)
     : Entity{name}
 {
+    AllCards.reserve(104);
+    DeckCards.reserve(104);
     CreateCards();
 }
 
 void DeckController::CreateCards()
 {
-    AllCards.reserve(104);
     for (int i=0; i < 10; i++)
     {
         CreateNumberCardInAllColors(i);
@@ -85,8 +86,18 @@ bool DeckController::IsDeckEmpty() const
 void DeckController::ShuffleTossedCardsBackToDeck()
 {}
 
-std::weak_ptr<Card> DeckController::GetCardFromDeck()
-{}
+std::weak_ptr<Card> DeckController::BuyCardFromDeck()
+{
+    if(DeckCards.empty())
+    {
+        ShuffleTossedCardsBackToDeck();
+    }
+
+    auto topCard = DeckCards.back();
+    DeckCards.pop_back();
+
+    return topCard;
+}
 
 std::weak_ptr<Card> DeckController::GetLastTossedCard()
 {
