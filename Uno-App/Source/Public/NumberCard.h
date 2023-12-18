@@ -1,7 +1,5 @@
 #pragma once
-
 #include "Card.h"
-#include "EColor.h"
 
 class NumberCard : public Card
 {

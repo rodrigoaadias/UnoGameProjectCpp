@@ -1,10 +1,14 @@
 #include "Public/Match.h"
 #include "Core/Core.h"
+#include "Core/Public/Engine.h"
+#include "Public/DeckController.h"
 #include "Public/Player.h"
 
 Match::Match(const std::string& matchName)
     : Entity{matchName}, CurrentTurn{0}, Flow{ETurnFlow::Clockwise}
-{ }
+{
+    JoinedPlayers.reserve(10);
+}
 
 void Match::StartNewMatch()
 {
@@ -17,13 +21,15 @@ void Match::StartNewMatch()
     }
 
     JoinPlayers(numPlayers);
+    CreateDeck();
+    SortCardsToPlayers();
 }
 
 void Match::JoinPlayers(const int& number)
 {
     for (int i=0; i < number; i++)
     {
-        JoinedPlayers.push_back(CreatePlayer(i));
+        JoinedPlayers.emplace_back(CreatePlayer(i));
     }
 }
 
@@ -43,10 +49,22 @@ EntityPtr<Player> Match::CreatePlayer(const int& index)
 }
 
 void Match::CreateDeck()
-{}
+{
+    Deck = EntityPtr<DeckController>::MakeEntityPtr("Deck Controller");
+}
 
 void Match::SortCardsToPlayers()
-{}
+{
+    Deck->ShuffleDeckCards();
+
+    for (auto player : JoinedPlayers)
+    {
+        for (int i=0; i < 7; i++)
+        {
+            player->AddCardToHand(Deck->BuyCardFromDeck());
+        }
+    }
+}
 
 void Match::SortFirstPlayerTurn()
 {}
