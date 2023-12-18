@@ -1,7 +1,7 @@
 #pragma once
 #include "Card.h"
 
-class JumpCard : Card
+class JumpCard : public Card
 {
 public:
     JumpCard(const EColor& color);

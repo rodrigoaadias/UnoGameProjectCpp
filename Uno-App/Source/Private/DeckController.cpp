@@ -1,6 +1,12 @@
 #include "Public/DeckController.h"
+#include <chrono>
+#include <random>
+#include "Core/Core.h"
 #include "Core/Public/Engine.h"
+#include "Public/JumpCard.h"
+#include "Public/MustBuyCard.h"
 #include "Public/NumberCard.h"
+#include "Public/ReverseCard.h"
 
 DeckController::DeckController(const std::string& name)
     : Entity{name}
@@ -16,7 +22,12 @@ void DeckController::CreateCards()
         CreateNumberCardInAllColors(i);
     }
 
-    std::cout << "Deck amount: " << AllCards.size() << std::endl;
+    CreateSpecialCardsByColor(EColor::Blue);
+    CreateSpecialCardsByColor(EColor::Red);
+    CreateSpecialCardsByColor(EColor::Green);
+    CreateSpecialCardsByColor(EColor::Yellow);
+
+    Core::LogMessage("Cards created! Total of cards available: " + std::to_string(AllCards.size()));
 }
 
 void DeckController::CreateNumberCardInAllColors(int number)
@@ -29,27 +40,55 @@ void DeckController::CreateNumberCardInAllColors(int number)
 
 void DeckController::CreateNumberCardOfColor(int number, EColor color)
 {
-    EntityPtr<NumberCard> card01 = Engine::CreateEntity<NumberCard>(color, number);
-    EntityPtr<NumberCard> card02 = Engine::CreateEntity<NumberCard>(color, number);
-    AllCards.push_back(static_cast<EntityPtr<Card>>(card01));
-    AllCards.push_back(static_cast<EntityPtr<Card>>(card02));
+    EntityPtr<NumberCard> card01 = EntityPtr<NumberCard>::MakeEntityPtr(color, number);
+    EntityPtr<NumberCard> card02 = EntityPtr<NumberCard>::MakeEntityPtr(color, number);
+    EmplaceCreatedCard(static_cast<EntityPtr<Card>>(card01));
+    EmplaceCreatedCard(static_cast<EntityPtr<Card>>(card02));
+}
+
+void DeckController::CreateSpecialCardsByColor(EColor color)
+{
+    for (int i=0; i < 2; i++)
+    {
+        EntityPtr<MustBuyCard> plusTwoCard = EntityPtr<MustBuyCard>::MakeEntityPtr(color, 2);
+        EntityPtr<JumpCard> jumpCard = EntityPtr<JumpCard>::MakeEntityPtr(color);
+        EntityPtr<ReverseCard> reverseCard = EntityPtr<ReverseCard>::MakeEntityPtr(color);
+
+        EmplaceCreatedCard(static_cast<EntityPtr<Card>>(plusTwoCard));
+        EmplaceCreatedCard(static_cast<EntityPtr<Card>>(jumpCard));
+        EmplaceCreatedCard(static_cast<EntityPtr<Card>>(reverseCard));
+    }
+}
+
+void DeckController::EmplaceCreatedCard(EntityPtr<Card> card)
+{    
+    AllCards.emplace_back(card);
+    AddCardToDeck(card);
 }
 
 void DeckController::ShuffleDeckCards()
-{}
-
-void DeckController::AddCardToDeck(EntityPtr<Card> card)
-{}
-
-bool DeckController::IsDeckEmpty()
 {
-    return false;
+    const unsigned seed = static_cast<unsigned>(std::chrono::system_clock::now().time_since_epoch().count());
+    std::ranges::shuffle(DeckCards, std::default_random_engine(seed));
+}
+
+void DeckController::AddCardToDeck(EntityPtr<Card>& card)
+{
+    DeckCards.emplace_back(card.get());
+}
+
+bool DeckController::IsDeckEmpty() const
+{
+    return DeckCards.empty();
 }
 
 void DeckController::ShuffleTossedCardsBackToDeck()
 {}
 
-std::weak_ptr<Card> DeckController::GetTopCard()
+std::weak_ptr<Card> DeckController::GetCardFromDeck()
+{}
+
+std::weak_ptr<Card> DeckController::GetLastTossedCard()
 {
-    return TossedCards.empty() ? std::weak_ptr<Card>() : TossedCards.top().get();
+    return TossedCards.empty() ? std::weak_ptr<Card>() : TossedCards.top();
 }

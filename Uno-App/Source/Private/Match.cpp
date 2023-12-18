@@ -19,13 +19,15 @@ void Match::StartNewMatch()
     }
 
     JoinPlayers(numPlayers);
+    CreateDeck();
+    SortCardsToPlayers();
 }
 
 void Match::JoinPlayers(const int& number)
 {
     for (int i=0; i < number; i++)
     {
-        JoinedPlayers.push_back(CreatePlayer(i));
+        JoinedPlayers.emplace_back(CreatePlayer(i));
     }
 }
 
@@ -45,10 +47,14 @@ EntityPtr<Player> Match::CreatePlayer(const int& index)
 }
 
 void Match::CreateDeck()
-{}
+{
+    Deck = EntityPtr<DeckController>::MakeEntityPtr("Deck Controller");
+}
 
 void Match::SortCardsToPlayers()
-{}
+{
+    Deck->ShuffleDeckCards();    
+}
 
 void Match::SortFirstPlayerTurn()
 {}

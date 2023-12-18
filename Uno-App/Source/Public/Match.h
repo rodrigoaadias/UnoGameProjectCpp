@@ -5,6 +5,7 @@
 #include "Core/Public/Entity.h"
 
 class Player;
+class DeckController;
 
 class Match : public Entity
 {
@@ -12,6 +13,7 @@ class Match : public Entity
     ETurnFlow Flow;
     std::vector<EntityPtr<Player>> JoinedPlayers;
 
+    EntityPtr<DeckController> Deck;
     EntityPtr<Player> CreatePlayer(const int& index);
 
 public:

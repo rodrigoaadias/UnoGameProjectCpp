@@ -8,7 +8,7 @@ void Engine::Reserve(const int size)
 void Engine::InitEntity(const std::weak_ptr<Entity>& newEntity)
 {
     const std::shared_ptr<Entity> sharedNewEntity = newEntity.lock(); 
-    Entities.push_back(newEntity);
+    Entities.emplace_back(newEntity);
     sharedNewEntity->Begin();
 }
 
