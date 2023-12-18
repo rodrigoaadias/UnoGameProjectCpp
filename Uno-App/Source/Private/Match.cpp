@@ -1,5 +1,7 @@
 #include "Public/Match.h"
 #include "Core/Core.h"
+#include "Core/Public/Engine.h"
+#include "Public/DeckController.h"
 #include "Public/Player.h"
 
 Match::Match(const std::string& matchName)
