@@ -39,7 +39,7 @@ EntityPtr<Player> Match::CreatePlayer(const int& index)
         }
     }
 
-    return EntityPtr<Player>::MakeEntityPtr(playerName);
+    return EntityPtr<Player>::MakeEntityPtr(playerName, index);
 }
 
 void Match::CreateDeck()
