@@ -14,7 +14,7 @@ void GameLifecycleController::Begin()
     Entity::Begin();
     Core::LogMessage("Welcome to the UNO GAME - PLUS PLUS YOUR LIFE\n");
     Core::LogMessage("Would you like to start a new Match?");
-    int choice = Core::GetInput<int>("1 - Yes;  2- No, quit the game: ");
+    const int choice = Core::GetInput<int>("1 - Yes;  2 - No, quit the game: ");
     if(choice == 1)
     {
         const auto matchName = Core::GetInput<std::string>("Give a name to your match: ");
