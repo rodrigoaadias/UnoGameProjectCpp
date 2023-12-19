@@ -29,3 +29,8 @@ std::string Player::ToString()
     
     return GetDisplayName() + ": " + cardsToString;
 }
+
+std::vector<std::weak_ptr<Card>>& Player::GetCards()
+{
+    return CardsOnHand;
+}

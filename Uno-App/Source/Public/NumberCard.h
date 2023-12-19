@@ -8,4 +8,5 @@ public:
     NumberCard(EColor color, int number);
 
     int GetNumber() const { return Number; }
+    std::string GetCardTypeName() const override;
 };

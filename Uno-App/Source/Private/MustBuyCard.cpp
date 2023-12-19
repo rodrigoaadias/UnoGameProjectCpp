@@ -8,3 +8,8 @@ int MustBuyCard::GetAmountToBuy() const
 {
     return AmountToBuy;
 }
+
+std::string MustBuyCard::GetCardTypeName() const
+{
+    return "+" + std::to_string(AmountToBuy);
+}

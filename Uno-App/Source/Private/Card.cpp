@@ -1,5 +1,92 @@
 #include "Public/Card.h"
+#include "Statics.h"
 
 Card::Card(const std::string& name, const EColor color)
     : Entity{getColorName(color) + " " + name}, Color{color}
 {}
+
+std::string Card::GetTypename(const Card& card)
+{
+    std::string typeName = card.GetCardTypeName();
+    bool bBefore = false;
+    while (typeName.length() < LINE_WIDTH-2)
+    {
+        if(bBefore)
+        {
+            typeName.insert(typeName.begin(), ' ');
+        }
+        else
+        {
+            typeName.append(" ");            
+        }
+
+        bBefore = !bBefore;
+    }
+    if(typeName.length() > LINE_WIDTH - 2)
+    {
+        typeName.erase(typeName.begin() + LINE_WIDTH - 2, typeName.end());
+    }
+
+    return typeName;
+}
+
+std::string Card::GetConsoleColorCode(EColor color)
+{
+    switch (color)
+    {
+    case EColor::Blue:
+        return "\033[34m";
+    case EColor::Yellow:
+        return "\033[33m";
+    case EColor::Red:
+        return "\033[31m";
+    case EColor::Green:
+        return "\033[32m";
+    }
+
+    return DEFAULT_COLOR;
+}
+
+std::vector<std::string> Card::GetDisplayCard(const Card& card)
+{
+    std::vector<std::string> returnValue;
+    returnValue.reserve(COLUMN_HEIGHT);
+    std::string displayColor = getColorName(card.GetColor());
+    bool bBefore = true;
+    while (displayColor.length() < COLOR_DISPLAY_SIZE)
+    {
+        if(bBefore)
+        {
+            displayColor.insert(displayColor.begin(), ' ');
+        }
+        else
+        {
+            displayColor.append(" ");            
+        }
+
+        bBefore = !bBefore;
+    }
+
+    const std::string colorLine = GetConsoleColorCode(card.Color) + "XX" + displayColor + "XX" + DEFAULT_COLOR;
+    const std::string defaultLine = GetConsoleColorCode(card.Color) + "X         X" + DEFAULT_COLOR;  
+    const std::string centerLine = GetConsoleColorCode(card.Color) + "X" + GetTypename(card) + "X" + DEFAULT_COLOR;
+
+    // build string vector
+    for (int i=0; i < COLUMN_HEIGHT; i++)
+    {
+        if(i == 0 || i == COLUMN_HEIGHT - 1)
+        {
+            returnValue.emplace_back(colorLine);
+        }
+        else if(i == COLUMN_HEIGHT / 2)
+        {
+            returnValue.emplace_back(centerLine);
+        }
+        else
+        {
+            returnValue.emplace_back(defaultLine);
+        }
+    }
+
+    return returnValue;
+}

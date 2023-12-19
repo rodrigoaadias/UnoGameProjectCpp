@@ -9,4 +9,6 @@ public:
     MustBuyCard(const EColor& color, int amountToBuy);
 
     int GetAmountToBuy() const;
+
+    std::string GetCardTypeName() const override;
 };
