@@ -12,8 +12,8 @@ GameLifecycleController::GameLifecycleController(const std::string& name)
 void GameLifecycleController::Begin()
 {
     Entity::Begin();
-    Core::LogMessage("Welcome to the UNO GAME - PLUS PLUS YOUR LIFE\n\n");
-    Core::LogMessage("Do you like to start a new Match?");
+    Core::LogMessage("Welcome to the UNO GAME - PLUS PLUS YOUR LIFE\n");
+    Core::LogMessage("Would you like to start a new Match?");
     int choice = Core::GetInput<int>("1 - Yes;  2- No, quit the game: ");
     if(choice == 1)
     {
