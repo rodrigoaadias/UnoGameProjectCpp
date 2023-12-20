@@ -83,7 +83,12 @@ void Player::BuyCardAndTryToss(const std::weak_ptr<DeckController>& deckControll
     Core::WaitAnyKey(GetDisplayName() + ": you must buy a card from deck! ");
     BuyDeckCard(deckController);
     Core::LogMessage(GetDisplayName() + " has bought the following card: ");
-    EntityPtr<Card> boughtCard = CardsOnHand.back();
+    EntityPtr<Card> boughtCard = CardsOnHand.at(CardsOnHand.size() - 1);
+    if(!boughtCard.IsValid())
+    {
+        Core::LogError("ERROR: Bought card is invalid!");
+    }
+
     boughtCard->Draw();
 
     if(boughtCard->CanBeTossed(tossedCard))
@@ -140,6 +145,10 @@ void Player::PlayTurn(const std::weak_ptr<DeckController>& deckController)
             Core::WaitAnyKey("You didn't yelled UNO!... Now you must buy 2 cards and skip your turn!");
             BuyDeckCard(deckController);
             BuyDeckCard(deckController);
+
+            Core::LogMessage(GetName() + " bought the following cards: ");
+            Card::DrawCards({CardsOnHand.at(CardsOnHand.size() - 1),
+                                CardsOnHand.at(CardsOnHand.size() - 2)});
             return;
         }
 

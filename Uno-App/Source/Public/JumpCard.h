@@ -9,4 +9,6 @@ public:
     std::string GetCardTypeName() const override;
 
     EntityPtr<Round> GetCustomRound(int roundIndex) override;
+    
+    bool CanBeTossed(EntityPtr<Card> other) override;
 };

@@ -19,7 +19,9 @@ public:
     virtual std::string GetCardTypeName() const = 0;
     virtual bool CanBeTossed(EntityPtr<Card> other);
 
-    static std::vector<std::string> GetDisplayCard(const Card& card);
+    static std::vector<std::string> GetDisplayCard(const Card& card);  
+    static void DrawCards(const std::vector<EntityPtr<Card>>& cards, bool drawOption = false);
+    static void AddToLineIndex(std::vector<std::string>& lines, const std::string& text, int i);
 
     void Draw() const;
 };
