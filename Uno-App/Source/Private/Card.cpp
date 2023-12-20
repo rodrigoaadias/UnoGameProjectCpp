@@ -1,5 +1,6 @@
 #include "Public/Card.h"
 #include "Statics.h"
+#include "Core/Core.h"
 
 Card::Card(const std::string& name, const EColor color)
     : Entity{getColorName(color) + " " + name}, Color{color}
@@ -47,6 +48,11 @@ std::string Card::GetConsoleColorCode(EColor color)
     return DEFAULT_COLOR;
 }
 
+bool Card::CanBeTossed(EntityPtr<Card> other)
+{
+    return !other.IsValid() || Color == other->GetColor();
+}
+
 std::vector<std::string> Card::GetDisplayCard(const Card& card)
 {
     std::vector<std::string> returnValue;
@@ -89,4 +95,13 @@ std::vector<std::string> Card::GetDisplayCard(const Card& card)
     }
 
     return returnValue;
+}
+
+void Card::Draw() const
+{
+    const std::vector<std::string> stringVector = GetDisplayCard(*this);
+    for (const auto& line : stringVector)
+    {
+        Core::LogMessage(line);
+    }
 }

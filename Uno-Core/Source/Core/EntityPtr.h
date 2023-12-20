@@ -32,6 +32,12 @@ public:
         assert(IsValid());
         return *Instance;
     }
+    
+    std::shared_ptr<TElement> operator -> () const
+    {
+        assert(IsValid());
+        return *Instance;
+    }
 
     template <typename TOther>
     explicit operator EntityPtr<TOther>()

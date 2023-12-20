@@ -8,3 +8,8 @@ std::string JumpCard::GetCardTypeName() const
 {
     return "Jump";
 }
+
+EntityPtr<Round> JumpCard::GetCustomRound(const int roundIndex)
+{
+    return EntityPtr<Round>::MakeEntityPtr(roundIndex);
+}

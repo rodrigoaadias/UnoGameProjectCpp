@@ -31,7 +31,7 @@ void DeckController::CreateCards()
     Core::LogMessage("Cards created! Total of cards available: " + std::to_string(AllCards.size()));
 }
 
-void DeckController::CreateNumberCardInAllColors(int number)
+void DeckController::CreateNumberCardInAllColors(const int number)
 {
     CreateNumberCardOfColor(number, EColor::Blue);
     CreateNumberCardOfColor(number, EColor::Yellow);
@@ -39,7 +39,7 @@ void DeckController::CreateNumberCardInAllColors(int number)
     CreateNumberCardOfColor(number, EColor::Green);
 }
 
-void DeckController::CreateNumberCardOfColor(int number, EColor color)
+void DeckController::CreateNumberCardOfColor(const int number, EColor color)
 {
     EntityPtr<NumberCard> card01 = EntityPtr<NumberCard>::MakeEntityPtr(color, number);
     EntityPtr<NumberCard> card02 = EntityPtr<NumberCard>::MakeEntityPtr(color, number);
@@ -67,6 +67,18 @@ void DeckController::EmplaceCreatedCard(EntityPtr<Card> card)
     AddCardToDeck(card);
 }
 
+EntityPtr<Card> DeckController::PopFromStack()
+{
+    if(TossedCards.empty())
+    {
+        return EntityPtr<Card>();
+    }
+
+    auto topCard = TossedCards.top();
+    TossedCards.pop();
+    return topCard;
+}
+
 void DeckController::ShuffleDeckCards()
 {
     const unsigned seed = static_cast<unsigned>(std::chrono::system_clock::now().time_since_epoch().count());
@@ -75,7 +87,7 @@ void DeckController::ShuffleDeckCards()
 
 void DeckController::AddCardToDeck(EntityPtr<Card>& card)
 {
-    DeckCards.emplace_back(card.get());
+    DeckCards.emplace_back(card);
 }
 
 bool DeckController::IsDeckEmpty() const
@@ -84,9 +96,23 @@ bool DeckController::IsDeckEmpty() const
 }
 
 void DeckController::ShuffleTossedCardsBackToDeck()
-{}
+{
+    const EntityPtr<Card> topCard = PopFromStack();
+    while (!TossedCards.empty())
+    {
+        DeckCards.emplace_back(PopFromStack());
+    }
 
-std::weak_ptr<Card> DeckController::BuyCardFromDeck()
+    AddCardToTable(topCard);
+    ShuffleDeckCards();
+}
+
+void DeckController::AddCardToTable(const EntityPtr<Card>& card)
+{
+    TossedCards.emplace(card);
+}
+
+EntityPtr<Card> DeckController::BuyCardFromDeck()
 {
     if(DeckCards.empty())
     {
@@ -99,7 +125,7 @@ std::weak_ptr<Card> DeckController::BuyCardFromDeck()
     return topCard;
 }
 
-std::weak_ptr<Card> DeckController::GetLastTossedCard()
+EntityPtr<Card> DeckController::GetLastTossedCard()
 {
-    return TossedCards.empty() ? std::weak_ptr<Card>() : TossedCards.top();
+    return TossedCards.empty() ? EntityPtr<Card>() : TossedCards.top();
 }

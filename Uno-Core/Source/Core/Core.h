@@ -22,6 +22,12 @@ public:
         return returnValue;
     }
 
+    static void WaitAnyKey(const std::string& message)
+    {
+        LogMessage(message);
+        std::cin.get();
+    }
+
     static void LogMessage(const std::string& message)
     {
         std::cout << message << std::endl;

@@ -1,5 +1,6 @@
 #pragma once
 #include "Card.h"
+#include "Core/EntityPtr.h"
 
 class NumberCard : public Card
 {
@@ -9,4 +10,5 @@ public:
 
     int GetNumber() const { return Number; }
     std::string GetCardTypeName() const override;
+    bool CanBeTossed(EntityPtr<Card> other) override;
 };

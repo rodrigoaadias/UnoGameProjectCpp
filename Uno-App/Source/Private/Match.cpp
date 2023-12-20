@@ -6,6 +6,10 @@
 #include "Public/Player.h"
 #include <stdlib.h>
 
+#include "Public/ICustomRoundCard.h"
+#include "Public/JumpCard.h"
+#include "Public/Round.h"
+
 Match::Match(const std::string& matchName)
     : Entity{matchName}, CurrentTurn{0}, Flow{ETurnFlow::Clockwise}
 {
@@ -30,15 +34,9 @@ void Match::Tick()
 
 void Match::StartNewMatch()
 {
-    Core::LogMessage("Starting Match " + GetName());
-    int numPlayers = Core::GetInput<int>("How many players will join this match? (Must be between 2 and 10): ");
-    while (numPlayers < 2 || numPlayers > 10)
-    {
-        Core::LogMessage(std::to_string(numPlayers) + " players are not allowed. Select a number between 2 and 10");
-        numPlayers = Core::GetInput<int>("How many players will join this match? (Must be between 2 and 10): ");
-    }
-
-    JoinPlayers(numPlayers);
+    Core::LogMessage("Starting Match: " + GetName());
+    PlayersCount = GetNumberOfPlayers();
+    JoinPlayers(PlayersCount);
     CreateDeck();
     SortCardsToPlayers();
     SetupTurnFlow();
@@ -46,9 +44,20 @@ void Match::StartNewMatch()
     bMatchReady = true;
 }
 
+int Match::GetNumberOfPlayers()
+{
+    int numPlayers = Core::GetInput<int>("How many players will join this match? (Must be between 2 and 10): ");
+    while (numPlayers < 2 || numPlayers > 10)
+    {
+        Core::LogMessage(std::to_string(numPlayers) + " players are not allowed. Select a number between 2 and 10");
+        numPlayers = Core::GetInput<int>("How many players will join this match? (Must be between 2 and 10): ");
+    }
+
+    return numPlayers;
+}
+
 void Match::JoinPlayers(const int& number)
 {
-    PlayersCount = number;
     for (int i=0; i < number; i++)
     {
         JoinedPlayers.emplace_back(CreatePlayer(i));
@@ -83,7 +92,7 @@ void Match::SortCardsToPlayers()
     {
         for (int i=0; i < 7; i++)
         {
-            player->AddCardToHand(Deck->BuyCardFromDeck());
+            player->BuyDeckCard(Deck.get());
         }
     }
 }
@@ -94,28 +103,50 @@ void Match::SetupTurnFlow()
     Flow = rand() % 2 == 0 ? ETurnFlow::Clockwise : ETurnFlow::AntiClockwise;
 }
 
+void Match::IncreaseTurn()
+{
+    CurrentTurn++;
+    CurrentPlayerIndex += Flow == ETurnFlow::Clockwise ? 1 : -1;
+
+    if(CurrentPlayerIndex >= static_cast<int>(JoinedPlayers.size()))
+    {
+        CurrentPlayerIndex = 0;
+    }
+
+    if(CurrentPlayerIndex < 0)
+    {
+        CurrentPlayerIndex = static_cast<int>(JoinedPlayers.size()) - 1;
+    }
+}
+
 void Match::PlayTurn()
 {
-    const std::weak_ptr<Player> currentPlayerTurn = JoinedPlayers[CurrentPlayerIndex].get();
+    const auto currentPlayerTurn = JoinedPlayers[CurrentPlayerIndex];
+    CurrentTurn++;
 
     // execute pre turn actions
-
-    // draw turn infos
-    DrawTurn(currentPlayerTurn);
-
-    Core::LogMessage(currentPlayerTurn.lock()->GetName() + ": what is your choice?");
-    Core::LogMessage("1 - Play a card");
-    Core::LogMessage("2 - Quit Game");
-
-    const int choice = Core::GetInput<int>({});
-    if(choice == 2)
+    const auto tossedCard = Deck->GetLastTossedCard();
+    if(tossedCard.IsValid())
     {
-        FinishMatch();
+        const auto customRoundCard = std::dynamic_pointer_cast<ICustomRoundCard>(*tossedCard.Instance);
+        if (customRoundCard != nullptr)
+        {
+            auto newCustomRound = customRoundCard->GetCustomRound(CurrentTurn);
+            newCustomRound->RunRound(currentPlayerTurn, Deck);
+            return;
+        }
     }
+
+    // Run turn
+    EntityPtr<Round> newRound = EntityPtr<Round>::MakeEntityPtr(CurrentTurn);
+    newRound->RunRound(currentPlayerTurn, Deck);
 
     //execute post turn actions
 
     // select next player
+    IncreaseTurn();
+
+    Core::WaitAnyKey("Press any key to go to next turn");
 }
 
 void Match::ExecuteCardAction()
@@ -138,59 +169,4 @@ bool Match::IsMatchEnded()
 void Match::FinishMatch()
 {
     bMatchFinished = true;
-}
-
-void Match::DrawCards(const std::vector<std::weak_ptr<Card>>& cards)
-{
-    std::vector<std::string> lines;
-    lines.reserve(COLUMN_HEIGHT);
-    for (const std::weak_ptr<Card>& card : cards)
-    {
-        if(card.expired())
-        {
-            continue;
-        }
-
-        std::string spaceBetweenCards = "      ";
-        std::vector<std::string> cardDisplay = Card::GetDisplayCard(*std::dynamic_pointer_cast<Card>(card.lock()));
-        for (int i=0; i < COLUMN_HEIGHT; i++)
-        {
-            if(static_cast<int>(lines.size()) <= i)
-            {               
-                lines.emplace_back(cardDisplay[i] + spaceBetweenCards);
-            }
-            else
-            {
-                lines[i].append(cardDisplay[i] + spaceBetweenCards);
-            }
-        }
-    }
-
-    for (const std::string& line : lines)
-    {
-        Core::LogMessage(line + DEFAULT_COLOR);
-    }
-}
-
-void Match::DrawTurn(std::weak_ptr<Player> player)
-{
-    system("cls");
-    const auto playerPtr = player.lock();
-    Core::LogMessage("ROUND " + std::to_string(CurrentTurn) + ": " + playerPtr->GetDisplayName() + "'s turn!");
-
-    const auto tableCard = Deck->GetLastTossedCard();
-    if(tableCard.expired())
-    {
-        Core::LogMessage("There is no card on the table");        
-    }
-    else
-    {
-        Core::LogMessage("Card on table:");
-        DrawCards(std::vector {tableCard});
-    }
-
-    std::cout << "\n\n\n";
-    Core::LogMessage(playerPtr->GetName() + " - your current cards: ");
-    DrawCards(playerPtr->GetCards());
-    std::cout << "\n";
 }
