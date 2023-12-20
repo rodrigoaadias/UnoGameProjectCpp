@@ -39,6 +39,11 @@ public:
         return *Instance;
     }
 
+    bool operator==(const EntityPtr& other) const
+    {
+        return Instance == other.Instance && IsValid() && other.IsValid();
+    }
+
     template <typename TOther>
     explicit operator EntityPtr<TOther>()
     {

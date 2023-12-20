@@ -22,6 +22,8 @@ class Match : public Entity
 
     EntityPtr<Player> CreatePlayer(const int& index);
     void IncreaseTurn();
+    EntityPtr<Card> LastCard; 
+
 public:
     Match(const std::string& matchName);
 
@@ -37,7 +39,6 @@ public:
     void PlayTurn();
     void ExecuteCardAction();      
     void ExecuteCardTossAction();  
-    void SkipTurn();
     void ReverseFlow();
     bool IsMatchEnded();
     void FinishMatch();

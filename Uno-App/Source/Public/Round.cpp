@@ -8,16 +8,14 @@ Round::Round(int index)
     :Entity{"Round " + std::to_string(index)}, RoundIndex{index}
 {}
 
-bool Round::RunRound(EntityPtr<Player> currentPlayer, EntityPtr<DeckController>& deckController)
+void Round::RunRound(EntityPtr<Player> currentPlayer, EntityPtr<DeckController>& deckController)
 {
     DrawTurn(currentPlayer, deckController);
 
     currentPlayer->PlayTurn(deckController.get());
-
-    return true;
 }
 
-void Round::DrawTurn(EntityPtr<Player> player, EntityPtr<DeckController> deckController)
+void Round::DrawTurn(EntityPtr<Player> player, EntityPtr<DeckController> deckController) const
 {
     system("cls");
     Core::LogMessage("ROUND " + std::to_string(RoundIndex) + ": " + player->GetDisplayName() + "'s turn!");

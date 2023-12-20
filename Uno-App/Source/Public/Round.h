@@ -8,11 +8,12 @@ class Player;
 
 class Round : public Entity
 {
+protected:
     int RoundIndex;
     
-    void DrawTurn(EntityPtr<Player> player, EntityPtr<DeckController> deckController);
+    void DrawTurn(EntityPtr<Player> player, EntityPtr<DeckController> deckController) const;
 public:
     Round(int index);
 
-    bool RunRound(EntityPtr<Player> currentPlayer, EntityPtr<DeckController>& deckController);
+    virtual void RunRound(EntityPtr<Player> currentPlayer, EntityPtr<DeckController>& deckController);
 };

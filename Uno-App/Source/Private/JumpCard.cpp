@@ -1,5 +1,7 @@
 #include "Public/JumpCard.h"
 
+#include "Public/JumpRound.h"
+
 JumpCard::JumpCard(const EColor& color)
     :Card{"Jump Card", color}
 {}
@@ -11,7 +13,7 @@ std::string JumpCard::GetCardTypeName() const
 
 EntityPtr<Round> JumpCard::GetCustomRound(const int roundIndex)
 {
-    return EntityPtr<Round>::MakeEntityPtr(roundIndex);
+    return static_cast<EntityPtr<Round>>(EntityPtr<JumpRound>::MakeEntityPtr(roundIndex));
 }
 
 bool JumpCard::CanBeTossed(EntityPtr<Card> other)

@@ -120,9 +120,10 @@ void Match::PlayTurn()
 {
     const auto currentPlayerTurn = JoinedPlayers[CurrentPlayerIndex];
     EntityPtr<Round> newRound;
+
     // execute pre turn actions
     const auto tossedCard = Deck->GetLastTossedCard();
-    if(tossedCard.IsValid())
+    if(tossedCard.IsValid() && tossedCard != LastCard)
     {
         const auto customRoundCard = std::dynamic_pointer_cast<ICustomRoundCard>(*tossedCard.Instance);
         if (customRoundCard != nullptr)
@@ -137,6 +138,7 @@ void Match::PlayTurn()
         newRound = EntityPtr<Round>::MakeEntityPtr(CurrentTurn);
     }
 
+    LastCard = tossedCard;
     newRound->RunRound(currentPlayerTurn, Deck);
 
     if(currentPlayerTurn->GetCards().empty())
@@ -155,9 +157,6 @@ void Match::ExecuteCardAction()
 {}
 
 void Match::ExecuteCardTossAction()
-{}
-
-void Match::SkipTurn()
 {}
 
 void Match::ReverseFlow()
