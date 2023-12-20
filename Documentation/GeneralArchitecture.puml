@@ -93,6 +93,12 @@ package UnoApp
         bool IsMatchEnded();
         void FinishMatch();
     }
+    
+    class Round{
+        int RoundIndex
+        std::weak_ptr<Player> CurrentPlayer;
+        std::weak_ptr<DeckController> Deck;
+    }
 
     class Card{
     }
@@ -109,6 +115,10 @@ package UnoApp
     Match ---> DeckController
     Match -> TurnFlow
     Match --> Card
+    Match --> Round
+    Round --> Player
+    Round --> DeckController
+    Round -> Card
 }
 
 @enduml

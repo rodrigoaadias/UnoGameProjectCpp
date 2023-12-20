@@ -11,4 +11,6 @@ public:
     int GetAmountToBuy() const;
 
     std::string GetCardTypeName() const override;
+    
+    bool CanBeTossed(EntityPtr<Card> other) override;
 };

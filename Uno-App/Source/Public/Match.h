@@ -21,6 +21,7 @@ class Match : public Entity
     EntityPtr<DeckController> Deck;
 
     EntityPtr<Player> CreatePlayer(const int& index);
+    void IncreaseTurn();
 public:
     Match(const std::string& matchName);
 
@@ -28,6 +29,7 @@ public:
     void Tick() override;
 
     void StartNewMatch();
+    int GetNumberOfPlayers();
     void JoinPlayers(const int& number);
     void CreateDeck();
     void SortCardsToPlayers();
@@ -39,6 +41,4 @@ public:
     void ReverseFlow();
     bool IsMatchEnded();
     void FinishMatch();
-    void DrawCards(const std::vector<std::weak_ptr<Card>>& cards);
-    void DrawTurn(std::weak_ptr<Player> player);
 };

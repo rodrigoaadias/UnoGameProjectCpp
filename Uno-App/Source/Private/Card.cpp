@@ -1,5 +1,6 @@
 #include "Public/Card.h"
 #include "Statics.h"
+#include "Core/Core.h"
 
 Card::Card(const std::string& name, const EColor color)
     : Entity{getColorName(color) + " " + name}, Color{color}
@@ -47,6 +48,11 @@ std::string Card::GetConsoleColorCode(EColor color)
     return DEFAULT_COLOR;
 }
 
+bool Card::CanBeTossed(EntityPtr<Card> other)
+{
+    return !other.IsValid() || Color == other->GetColor();
+}
+
 std::vector<std::string> Card::GetDisplayCard(const Card& card)
 {
     std::vector<std::string> returnValue;
@@ -89,4 +95,59 @@ std::vector<std::string> Card::GetDisplayCard(const Card& card)
     }
 
     return returnValue;
+}
+
+void Card::Draw() const
+{
+    const std::vector<std::string> stringVector = GetDisplayCard(*this);
+    for (const auto& line : stringVector)
+    {
+        Core::LogMessage(line);
+    }
+}
+
+void Card::AddToLineIndex(std::vector<std::string>& lines, const std::string& text, int i)
+{
+    if(static_cast<int>(lines.size()) <= i)
+    {               
+        lines.emplace_back(text);
+    }
+    else
+    {
+        lines[i].append(text);
+    }
+}
+
+void Card::DrawCards(const std::vector<EntityPtr<Card>>& cards, bool drawOption)
+{
+    std::vector<std::string> lines;
+    const int startAdding = drawOption ? 1 : 0;
+    lines.reserve(COLUMN_HEIGHT + startAdding);
+
+    int currentCard = -1;
+    for (const EntityPtr<Card>& card : cards)
+    {
+        currentCard++;
+        if(!card.IsValid())
+        {
+            continue;
+        }
+
+        std::string spaceBetweenCards = "      ";
+        std::vector<std::string> cardDisplay = Card::GetDisplayCard(**card.Instance);
+        if(drawOption)
+        {
+            AddToLineIndex(lines, "  Option: " + std::to_string(currentCard) + spaceBetweenCards, 0);
+        }
+
+        for (int i=0; i < COLUMN_HEIGHT; i++)
+        {
+            AddToLineIndex(lines, cardDisplay[i] + spaceBetweenCards, i+startAdding);
+        }
+    }
+
+    for (const std::string& line : lines)
+    {
+        Core::LogMessage(line + DEFAULT_COLOR);
+    }
 }

@@ -10,14 +10,15 @@ class Card;
 class DeckController : public Entity
 {
     std::vector<EntityPtr<Card>> AllCards;
-    std::vector<std::weak_ptr<Card>> DeckCards;
-    std::stack<std::weak_ptr<Card>> TossedCards;
+    std::vector<EntityPtr<Card>> DeckCards;
+    std::stack<EntityPtr<Card>> TossedCards;
 
     void CreateCards();
     void CreateNumberCardInAllColors(int number);
     void CreateNumberCardOfColor(int number, EColor color);
     void CreateSpecialCardsByColor(EColor color);
     void EmplaceCreatedCard(EntityPtr<Card> card);
+    EntityPtr<Card> PopFromStack();
 public:
     DeckController(const std::string& name);
 
@@ -25,6 +26,7 @@ public:
     void AddCardToDeck(EntityPtr<Card>& card);
     bool IsDeckEmpty() const;
     void ShuffleTossedCardsBackToDeck();
-    std::weak_ptr<Card> BuyCardFromDeck();
-    std::weak_ptr<Card> GetLastTossedCard();
+    void AddCardToTable(const EntityPtr<Card>& card);
+    EntityPtr<Card> BuyCardFromDeck();
+    EntityPtr<Card> GetLastTossedCard();
 };

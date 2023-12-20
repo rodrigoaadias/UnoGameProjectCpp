@@ -37,8 +37,7 @@ void GameLifecycleController::Tick()
     }
 
     Core::LogMessage("THANK YOU FOR PLAYING!");
-    Core::LogMessage("Press any key to quit the game");
-    std::cin.get();
+    Core::WaitAnyKey("Press any key to quit the game");
 
     Core::CloseApp();
 }
