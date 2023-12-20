@@ -107,7 +107,7 @@ void Match::IncreaseTurn()
 {
     CurrentTurn++;
     CurrentPlayerIndex += Flow == ETurnFlow::Clockwise ? 1 : -1;
-
+    
     if(CurrentPlayerIndex >= static_cast<int>(JoinedPlayers.size()))
     {
         CurrentPlayerIndex = 0;
@@ -122,7 +122,6 @@ void Match::IncreaseTurn()
 void Match::PlayTurn()
 {
     const auto currentPlayerTurn = JoinedPlayers[CurrentPlayerIndex];
-    CurrentTurn++;
 
     // execute pre turn actions
     const auto tossedCard = Deck->GetLastTossedCard();
@@ -141,9 +140,13 @@ void Match::PlayTurn()
     EntityPtr<Round> newRound = EntityPtr<Round>::MakeEntityPtr(CurrentTurn);
     newRound->RunRound(currentPlayerTurn, Deck);
 
-    //execute post turn actions
+    if(currentPlayerTurn->GetCards().empty())
+    {
+        Core::WaitAnyKey("CONGRATULATIONS " + currentPlayerTurn->GetName() + "!!! You won the game!");
+        FinishMatch();
+        return;
+    }
 
-    // select next player
     IncreaseTurn();
 
     Core::WaitAnyKey("Press any key to go to next turn");

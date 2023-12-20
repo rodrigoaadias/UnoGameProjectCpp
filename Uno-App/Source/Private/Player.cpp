@@ -61,63 +61,95 @@ void Player::Yell()
     HasYelled = true;
 }
 
-void Player::BuyDeckCard(std::weak_ptr<DeckController> deckController)
+void Player::BuyDeckCard(const std::weak_ptr<DeckController>& deckController)
 {
     AddCardToHand(deckController.lock()->BuyCardFromDeck());
     HasYelled = false;
 }
 
-void Player::TossValidCard(std::weak_ptr<DeckController> deckController, const uint32_t choice)
+void Player::TossValidCard(const std::weak_ptr<DeckController>& deckController, const uint32_t choice)
 {
     const EntityPtr<Card> selectedCard = PopCardFrom(choice);
     deckController.lock()->AddCardToTable(selectedCard);
 
     Core::LogMessage(GetDisplayName() + " tossed the following card:");
     selectedCard->Draw();
+
+    Core::WaitAnyKey({});
 }
 
-void Player::PlayTurn(std::weak_ptr<DeckController> deckController)
+void Player::BuyCardAndTryToss(const std::weak_ptr<DeckController>& deckController, const EntityPtr<Card>& tossedCard)
+{
+    Core::WaitAnyKey(GetDisplayName() + ": you must buy a card from deck! ");
+    BuyDeckCard(deckController);
+    Core::LogMessage(GetDisplayName() + " has bought the following card: ");
+    EntityPtr<Card> boughtCard = CardsOnHand.back();
+    boughtCard->Draw();
+
+    if(boughtCard->CanBeTossed(tossedCard))
+    {
+        TryYell();
+        Core::WaitAnyKey(GetDisplayName() + ": you can toss the card you bought!");
+        TossValidCard(deckController, CardsOnHand.size() - 1);
+    }
+    else
+    {
+        Core::LogMessage(GetDisplayName() + ": you can't toss the card you bought... :( your turn will be skipped");
+    }
+}
+
+void Player::SelectCardToToss(const std::weak_ptr<DeckController>& deckController, EntityPtr<Card> tossedCard)
+{
+    const uint32_t choice = Core::GetInput<int>("Select the card you want to toss accordingly the Option Number showing over the card: ");
+    while (choice < 0 || choice >= CardsOnHand.size())
+    {
+        Core::LogMessage("This option is not available. Select a valid option between 0 and " + std::to_string(CardsOnHand.size() - 1));
+        SelectCardToToss(deckController, tossedCard);
+        return;
+    }
+
+    if(!CardsOnHand[choice]->CanBeTossed(tossedCard))
+    {
+        Core::LogMessage("You can't toss this card. The card must match the color or number of the " + tossedCard->GetName());
+        SelectCardToToss(deckController, tossedCard);
+        return;
+    }
+
+    TossValidCard(deckController, choice);
+}
+
+void Player::TryYell()
+{
+    if(CanYell())
+    {
+        const uint32_t yellChoice = Core::GetInput<int>("Would you like to yell? 1 - Yes | 2 - No: ");
+        if(yellChoice == 1)
+        {
+            Yell();
+        }
+    }
+}
+
+void Player::PlayTurn(const std::weak_ptr<DeckController>& deckController)
 {
     EntityPtr<Card> tossedCard = deckController.lock()->GetLastTossedCard();
     if(CanTossCard(tossedCard))
     {
-        if(CanYell())
+        if(CardsOnHand.size() == 1 && !HasYelled)
         {
-            const uint32_t yellChoice = Core::GetInput<int>("Would you like to yell? 1 - Yes | 2 - No: ");
-            if(yellChoice == 1)
-            {
-                Yell();
-            }
-        }
-
-        const uint32_t choice = Core::GetInput<int>("Select the card you want to toss accordingly the number showing over the card: ");
-        while (choice < 0 || choice >= CardsOnHand.size())
-        {
-            Core::LogMessage("This option is not available. Select a valid option between 0 and " + std::to_string(CardsOnHand.size() - 1));
-            PlayTurn(deckController);
+            Core::WaitAnyKey("You didn't yelled UNO!... Now you must buy 2 cards and skip your turn!");
+            BuyDeckCard(deckController);
+            BuyDeckCard(deckController);
             return;
         }
 
-        if(!CardsOnHand[choice]->CanBeTossed(tossedCard))
-        {
-            Core::LogMessage("You can't toss this card. The card must match the color or number of the " + tossedCard->GetName());
-            PlayTurn(deckController);
-            return;
-        }
+        TryYell();
 
-        TossValidCard(deckController, choice);
+        SelectCardToToss(deckController, tossedCard);
     }
     else
     {
-        BuyDeckCard(deckController);
-        Core::LogMessage(GetDisplayName() + " has bought the following card: ");
-        EntityPtr<Card> boughtCard = CardsOnHand.back();
-        boughtCard->Draw();
-
-        if(boughtCard->CanBeTossed(tossedCard))
-        {
-            TossValidCard(deckController, CardsOnHand.size() - 1);
-        }
+        BuyCardAndTryToss(deckController, tossedCard);
     }
 }
 
