@@ -129,3 +129,13 @@ EntityPtr<Card> DeckController::GetLastTossedCard()
 {
     return TossedCards.empty() ? EntityPtr<Card>() : TossedCards.top();
 }
+
+int DeckController::GetAmountOfDeckCards() const
+{
+    return static_cast<int>(DeckCards.size());
+}
+
+int DeckController::GetAmountOfTossedCards() const
+{
+    return static_cast<int>(TossedCards.size());    
+}

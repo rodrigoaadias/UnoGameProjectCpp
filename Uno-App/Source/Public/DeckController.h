@@ -29,4 +29,7 @@ public:
     void AddCardToTable(const EntityPtr<Card>& card);
     EntityPtr<Card> BuyCardFromDeck();
     EntityPtr<Card> GetLastTossedCard();
+
+    int GetAmountOfDeckCards() const;
+    int GetAmountOfTossedCards() const;
 };

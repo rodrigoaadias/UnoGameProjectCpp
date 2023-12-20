@@ -7,8 +7,8 @@ JumpRound::JumpRound(int index)
     :Round{index}
 {}
 
-void JumpRound::RunRound(EntityPtr<Player> currentPlayer, EntityPtr<DeckController>& deckController)
+void JumpRound::RunRound(EntityPtr<Player> currentPlayer, EntityPtr<DeckController>& deckController, const ETurnFlow& turnFlow)
 {
-    DrawTurn(currentPlayer, deckController);
+    DrawTurn(currentPlayer, deckController, turnFlow);
     Core::LogMessage(currentPlayer->GetName() + " your turn will be skipped because the last card tossed is a Jump Card!");
 }

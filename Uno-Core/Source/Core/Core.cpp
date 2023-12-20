@@ -1,4 +1,7 @@
 #include "Core.h"
+
+#include <random>
+
 #include "Public/Engine.h"
 
 
@@ -34,4 +37,12 @@ void Core::LogMessage(const std::string& message)
 void Core::LogError(const std::string& errorMessage)
 {
     LogMessage("\033[31m" + errorMessage + "\033[0m");
+}
+
+int Core::RandomRange(int min, int maxInclusive)
+{
+    std::mt19937 mt{std::random_device{}()};
+    std::uniform_int_distribution distribution = std::uniform_int_distribution{min, maxInclusive};
+
+    return distribution(mt);
 }

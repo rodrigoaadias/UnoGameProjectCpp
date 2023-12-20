@@ -96,8 +96,8 @@ void Match::SortCardsToPlayers()
 
 void Match::SetupTurnFlow()
 {
-    CurrentPlayerIndex = rand() % PlayersCount;
-    Flow = rand() % 2 == 0 ? ETurnFlow::Clockwise : ETurnFlow::AntiClockwise;
+    CurrentPlayerIndex = Core::RandomRange(0, PlayersCount - 1);
+    Flow = Core::RandomRange(0, 1) == 0 ? ETurnFlow::Clockwise : ETurnFlow::AntiClockwise;
 }
 
 void Match::IncreaseTurn()
@@ -139,7 +139,7 @@ void Match::PlayTurn()
     }
 
     LastCard = tossedCard;
-    newRound->RunRound(currentPlayerTurn, Deck);
+    newRound->RunRound(currentPlayerTurn, Deck, Flow);
 
     if(currentPlayerTurn->GetCards().empty())
     {

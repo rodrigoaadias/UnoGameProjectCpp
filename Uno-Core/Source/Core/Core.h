@@ -25,4 +25,5 @@ public:
     static void WaitAnyKey(const std::string& message);
     static void LogMessage(const std::string& message);
     static void LogError(const std::string& errorMessage);
+    static int RandomRange(int min, int maxInclusive);
 };

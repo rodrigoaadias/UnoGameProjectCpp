@@ -11,7 +11,7 @@ Player::Player(const std::string& name, const int& index)
 
 std::string Player::GetDisplayName()
 {
-    return "Player " + std::to_string(Index)  + ": " + GetName();
+    return "Player " + std::to_string(Index)  + " - " + GetName();
 }
 
 void Player::AddCardToHand(EntityPtr<Card> card)
