@@ -153,12 +153,6 @@ void Match::PlayTurn()
     Core::WaitAnyKey("Press any key to go to next turn");
 }
 
-void Match::ExecuteCardAction()
-{}
-
-void Match::ExecuteCardTossAction()
-{}
-
 void Match::ReverseFlow()
 {}
 

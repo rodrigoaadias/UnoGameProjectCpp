@@ -37,8 +37,6 @@ public:
     void SortCardsToPlayers();
     void SetupTurnFlow();
     void PlayTurn();
-    void ExecuteCardAction();      
-    void ExecuteCardTossAction();  
     void ReverseFlow();
     bool IsMatchEnded();
     void FinishMatch();
