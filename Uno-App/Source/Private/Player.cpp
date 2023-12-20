@@ -74,8 +74,6 @@ void Player::TossValidCard(const std::weak_ptr<DeckController>& deckController, 
 
     Core::LogMessage(GetDisplayName() + " tossed the following card:");
     selectedCard->Draw();
-
-    Core::WaitAnyKey({});
 }
 
 void Player::BuyCardAndTryToss(const std::weak_ptr<DeckController>& deckController, const EntityPtr<Card>& tossedCard)
@@ -84,10 +82,6 @@ void Player::BuyCardAndTryToss(const std::weak_ptr<DeckController>& deckControll
     BuyDeckCard(deckController);
     Core::LogMessage(GetDisplayName() + " has bought the following card: ");
     EntityPtr<Card> boughtCard = CardsOnHand.at(CardsOnHand.size() - 1);
-    if(!boughtCard.IsValid())
-    {
-        Core::LogError("ERROR: Bought card is invalid!");
-    }
 
     boughtCard->Draw();
 

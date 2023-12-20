@@ -1,14 +1,11 @@
 #include "Public/Match.h"
-#include "Statics.h"
 #include "Core/Core.h"
 #include "Core/Public/Engine.h"
 #include "Public/DeckController.h"
 #include "Public/Player.h"
-#include <stdlib.h>
-
 #include "Public/ICustomRoundCard.h"
-#include "Public/JumpCard.h"
 #include "Public/Round.h"
+#include <stdlib.h>
 
 Match::Match(const std::string& matchName)
     : Entity{matchName}, CurrentTurn{0}, Flow{ETurnFlow::Clockwise}
@@ -122,7 +119,7 @@ void Match::IncreaseTurn()
 void Match::PlayTurn()
 {
     const auto currentPlayerTurn = JoinedPlayers[CurrentPlayerIndex];
-
+    EntityPtr<Round> newRound;
     // execute pre turn actions
     const auto tossedCard = Deck->GetLastTossedCard();
     if(tossedCard.IsValid())
@@ -130,14 +127,16 @@ void Match::PlayTurn()
         const auto customRoundCard = std::dynamic_pointer_cast<ICustomRoundCard>(*tossedCard.Instance);
         if (customRoundCard != nullptr)
         {
-            auto newCustomRound = customRoundCard->GetCustomRound(CurrentTurn);
-            newCustomRound->RunRound(currentPlayerTurn, Deck);
-            return;
+            newRound = customRoundCard->GetCustomRound(CurrentTurn);
         }
     }
 
     // Run turn
-    EntityPtr<Round> newRound = EntityPtr<Round>::MakeEntityPtr(CurrentTurn);
+    if(!newRound.IsValid())
+    {
+        newRound = EntityPtr<Round>::MakeEntityPtr(CurrentTurn);
+    }
+
     newRound->RunRound(currentPlayerTurn, Deck);
 
     if(currentPlayerTurn->GetCards().empty())
