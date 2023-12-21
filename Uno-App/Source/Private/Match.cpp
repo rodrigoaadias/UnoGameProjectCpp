@@ -5,9 +5,9 @@
 #include "Public/Player.h"
 #include "Public/ICustomRoundCard.h"
 #include "Public/Round.h"
-#include <stdlib.h>
 
 #include "Public/IPostRoundAction.h"
+#include "Public/MustBuyCard.h"
 
 Match::Match(const std::string& matchName)
     : Entity{matchName}, CurrentTurn{0}, Flow{ETurnFlow::Clockwise}
@@ -93,6 +93,10 @@ void Match::SortCardsToPlayers()
         {
             player->BuyDeckCard(Deck.get());
         }
+
+        auto card = static_cast<EntityPtr<Card>>(EntityPtr<MustBuyCard>::MakeEntityPtr( EColor::Blue, 2));
+        Deck->AddCardToDeck(card);
+        player->BuyDeckCard(Deck.get());
     }
 }
 
@@ -101,7 +105,6 @@ void Match::SetupTurnFlow()
     CurrentPlayerIndex = Core::RandomRange(0, PlayersCount - 1);
     Flow = Core::RandomRange(0, 1) == 0 ? ETurnFlow::Clockwise : ETurnFlow::AntiClockwise;
 }
-
 
 void Match::PostRoundAction(const EntityPtr<Card>& tossedCard)
 {
@@ -157,9 +160,10 @@ EntityPtr<Round> Match::MakeRound()
 void Match::PlayTurn()
 {
     const auto currentPlayerTurn = JoinedPlayers[CurrentPlayerIndex];
-    LastCard = Deck->GetLastTossedCard();
 
     EntityPtr<Round> newRound = MakeRound();
+    LastCard = Deck->GetLastTossedCard();
+
     newRound->RunRound(currentPlayerTurn, Deck, Flow);
 
     if(currentPlayerTurn->GetCards().empty())

@@ -1,5 +1,7 @@
 #include "Public/MustBuyCard.h"
 
+#include "Public/MustBuyRound.h"
+
 MustBuyCard::MustBuyCard(const EColor& color, int amountToBuy)
     : Card{"Buy +" + std::to_string(amountToBuy), color}, AmountToBuy{amountToBuy}
 {}
@@ -14,17 +16,33 @@ std::string MustBuyCard::GetCardTypeName() const
     return "+" + std::to_string(AmountToBuy);
 }
 
-bool MustBuyCard::CanBeTossed(EntityPtr<Card> other)
+bool MustBuyCard::CanTossCardOnMe(EntityPtr<Card> other)
 {
     if(other.IsValid())
     {
         const auto mustBuyCard = static_cast<EntityPtr<MustBuyCard>>(other);
-        if(mustBuyCard.IsValid() &&
-            mustBuyCard->GetAmountToBuy() == AmountToBuy)
+        if(mustBuyCard.IsValid()
+            && mustBuyCard->GetAmountToBuy() == AmountToBuy)
         {
             return true;
         }
     }
 
-    return Card::CanBeTossed(other);
+    return !IsInRound && Card::CanTossCardOnMe(other);
+}
+
+EntityPtr<Round> MustBuyCard::GetCustomRound(int roundIndex)
+{
+    IsInRound = true;
+    return static_cast<EntityPtr<Round>>(EntityPtr<MustBuyRound>::MakeEntityPtr(roundIndex, AmountToBuy + Cumulated));
+}
+
+void MustBuyCard::ClearRound()
+{
+    IsInRound = false;
+}
+
+void MustBuyCard::Cumulate(int amount)
+{
+    Cumulated = amount;
 }

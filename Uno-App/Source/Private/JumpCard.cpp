@@ -16,7 +16,7 @@ EntityPtr<Round> JumpCard::GetCustomRound(const int roundIndex)
     return static_cast<EntityPtr<Round>>(EntityPtr<JumpRound>::MakeEntityPtr(roundIndex));
 }
 
-bool JumpCard::CanBeTossed(EntityPtr<Card> other)
+bool JumpCard::CanTossCardOnMe(EntityPtr<Card> other)
 {
     if(other.IsValid())
     {
@@ -27,5 +27,5 @@ bool JumpCard::CanBeTossed(EntityPtr<Card> other)
         }
     }
 
-    return Card::CanBeTossed(other);
+    return Card::CanTossCardOnMe(other);
 }

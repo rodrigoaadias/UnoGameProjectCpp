@@ -48,7 +48,7 @@ std::string Card::GetConsoleColorCode(EColor color)
     return DEFAULT_COLOR;
 }
 
-bool Card::CanBeTossed(EntityPtr<Card> other)
+bool Card::CanTossCardOnMe(EntityPtr<Card> other)
 {
     return !other.IsValid() || Color == other->GetColor();
 }

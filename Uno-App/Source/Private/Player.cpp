@@ -33,7 +33,7 @@ bool Player::CanTossCard(const EntityPtr<Card>& lastTossedCard)
             continue;
         }
 
-        if(card->CanBeTossed(lastTossedCard))
+        if(lastTossedCard->CanTossCardOnMe(card))
         {
             return true;
         }
@@ -85,7 +85,7 @@ void Player::BuyCardAndTryToss(const std::weak_ptr<DeckController>& deckControll
 
     boughtCard->Draw();
 
-    if(boughtCard->CanBeTossed(tossedCard))
+    if(tossedCard->CanTossCardOnMe(boughtCard))
     {
         TryYell();
         Core::WaitAnyKey(GetDisplayName() + ": you can toss the card you bought!");
@@ -107,7 +107,7 @@ void Player::SelectCardToToss(const std::weak_ptr<DeckController>& deckControlle
         return;
     }
 
-    if(!CardsOnHand[choice]->CanBeTossed(tossedCard))
+    if(tossedCard.IsValid() && !tossedCard->CanTossCardOnMe(CardsOnHand[choice]))
     {
         Core::LogMessage("You can't toss this card. The card must match the color or number of the " + tossedCard->GetName());
         SelectCardToToss(deckController, tossedCard);
