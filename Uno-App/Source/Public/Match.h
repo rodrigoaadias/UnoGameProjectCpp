@@ -10,6 +10,8 @@ class DeckController;
 
 class Match : public Entity
 {
+    static constexpr int INITIAL_CARDS_PER_PLAYER = 7;
+    
     int CurrentTurn;
     int CurrentPlayerIndex;
     int PlayersCount;
