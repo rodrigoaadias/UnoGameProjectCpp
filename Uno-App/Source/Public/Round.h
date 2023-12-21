@@ -14,9 +14,6 @@ protected:
     
     void DrawTurn(EntityPtr<Player> player, EntityPtr<DeckController> deckController, const ETurnFlow& turnFlow) const;
 
-private:
-    std::string GetFlowName(const ETurnFlow& flow) const;
-
 public:
     Round(int index);
 

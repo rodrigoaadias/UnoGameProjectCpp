@@ -1,6 +1,5 @@
-#include "JumpRound.h"
-
-#include "Player.h"
+#include "Public/JumpRound.h"
+#include "Public/Player.h"
 #include "Core/Core.h"
 
 JumpRound::JumpRound(int index)

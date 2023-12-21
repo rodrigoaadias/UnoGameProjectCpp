@@ -22,3 +22,8 @@ bool ReverseCard::CanBeTossed(EntityPtr<Card> other)
 
     return Card::CanBeTossed(other);
 }
+
+void ReverseCard::Execute(Match* currentMatch)
+{
+    currentMatch->ReverseFlow();
+}
