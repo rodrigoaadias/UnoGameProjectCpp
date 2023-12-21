@@ -93,10 +93,6 @@ void Match::SortCardsToPlayers()
         {
             player->BuyDeckCard(Deck.get());
         }
-
-        auto card = static_cast<EntityPtr<Card>>(EntityPtr<MustBuyCard>::MakeEntityPtr( EColor::Blue, 2));
-        Deck->AddCardToDeck(card);
-        player->BuyDeckCard(Deck.get());
     }
 }
 
