@@ -96,8 +96,8 @@ void Match::SortCardsToPlayers()
 
 void Match::SetupTurnFlow()
 {
-    CurrentPlayerIndex = rand() % PlayersCount;
-    Flow = rand() % 2 == 0 ? ETurnFlow::Clockwise : ETurnFlow::AntiClockwise;
+    CurrentPlayerIndex = Core::RandomRange(0, PlayersCount - 1);
+    Flow = Core::RandomRange(0, 1) == 0 ? ETurnFlow::Clockwise : ETurnFlow::AntiClockwise;
 }
 
 void Match::IncreaseTurn()
@@ -120,9 +120,10 @@ void Match::PlayTurn()
 {
     const auto currentPlayerTurn = JoinedPlayers[CurrentPlayerIndex];
     EntityPtr<Round> newRound;
+
     // execute pre turn actions
     const auto tossedCard = Deck->GetLastTossedCard();
-    if(tossedCard.IsValid())
+    if(tossedCard.IsValid() && tossedCard != LastCard)
     {
         const auto customRoundCard = std::dynamic_pointer_cast<ICustomRoundCard>(*tossedCard.Instance);
         if (customRoundCard != nullptr)
@@ -137,7 +138,8 @@ void Match::PlayTurn()
         newRound = EntityPtr<Round>::MakeEntityPtr(CurrentTurn);
     }
 
-    newRound->RunRound(currentPlayerTurn, Deck);
+    LastCard = tossedCard;
+    newRound->RunRound(currentPlayerTurn, Deck, Flow);
 
     if(currentPlayerTurn->GetCards().empty())
     {
@@ -150,15 +152,6 @@ void Match::PlayTurn()
 
     Core::WaitAnyKey("Press any key to go to next turn");
 }
-
-void Match::ExecuteCardAction()
-{}
-
-void Match::ExecuteCardTossAction()
-{}
-
-void Match::SkipTurn()
-{}
 
 void Match::ReverseFlow()
 {}
