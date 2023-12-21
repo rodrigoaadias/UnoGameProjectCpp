@@ -118,15 +118,17 @@ void Card::AddToLineIndex(std::vector<std::string>& lines, const std::string& te
     }
 }
 
-void Card::DrawCards(const std::vector<EntityPtr<Card>>& cards, bool drawOption)
+void Card::DrawCardsFromTo(const std::vector<EntityPtr<Card>>& cards, const bool drawOption,
+    const int from, const int to)
 {
     std::vector<std::string> lines;
     const int startAdding = drawOption ? 1 : 0;
     lines.reserve(COLUMN_HEIGHT + startAdding);
 
     int currentCard = -1;
-    for (const EntityPtr<Card>& card : cards)
+    for (int k = from; k < to && k < static_cast<int>(cards.size()); k++)
     {
+        EntityPtr<Card> card = cards.at(k);
         currentCard++;
         if(!card.IsValid())
         {
@@ -137,7 +139,8 @@ void Card::DrawCards(const std::vector<EntityPtr<Card>>& cards, bool drawOption)
         std::vector<std::string> cardDisplay = Card::GetDisplayCard(**card.Instance);
         if(drawOption)
         {
-            AddToLineIndex(lines, "  Option: " + std::to_string(currentCard) + spaceBetweenCards, 0);
+            std::string space = k < 10 ? "  " : " ";
+            AddToLineIndex(lines, space + "Option: " + std::to_string(k) + spaceBetweenCards, 0);
         }
 
         for (int i=0; i < COLUMN_HEIGHT; i++)
@@ -149,5 +152,14 @@ void Card::DrawCards(const std::vector<EntityPtr<Card>>& cards, bool drawOption)
     for (const std::string& line : lines)
     {
         Core::LogMessage(line + DEFAULT_COLOR);
+    }
+}
+
+void Card::DrawCards(const std::vector<EntityPtr<Card>>& cards, bool drawOption)
+{
+    for (int i=0; i < static_cast<int>(cards.size()); i+=CARDS_PER_LINE)
+    {
+        DrawCardsFromTo(cards, drawOption, i, i + CARDS_PER_LINE);
+        std::cout << std::endl;
     }
 }
