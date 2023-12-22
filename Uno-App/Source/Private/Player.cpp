@@ -121,7 +121,7 @@ void Player::TryYell()
 {
     if(CanYell())
     {
-        const uint32_t yellChoice = Core::GetInput<int>("Would you like to yell? 1 - Yes | 2 - No: ");
+        const uint32_t yellChoice = Core::GetInput<int>("Would you like to yell?\n1 - Yes | [Any] - No: ");
         if(yellChoice == 1)
         {
             Yell();
