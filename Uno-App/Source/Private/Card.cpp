@@ -50,7 +50,7 @@ std::string Card::GetConsoleColorCode(EColor color)
 
 bool Card::CanTossCardOnMe(EntityPtr<Card> other)
 {
-    return !other.IsValid() || Color == other->GetColor();
+    return !other.IsValid() || Color == other->GetColor() || other->GetColor() == EColor::None || Color == EColor::None;
 }
 
 std::vector<std::string> Card::GetDisplayCard(const Card& card)

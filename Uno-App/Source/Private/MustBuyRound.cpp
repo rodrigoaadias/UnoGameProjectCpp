@@ -1,7 +1,7 @@
-﻿#include "MustBuyRound.h"
-#include "DeckController.h"
-#include "MustBuyCard.h"
-#include "Player.h"
+﻿#include "Public/MustBuyRound.h"
+#include "Public/DeckController.h"
+#include "Public/MustBuyCard.h"
+#include "Public/Player.h"
 #include "Core/Core.h"
 
 MustBuyRound::MustBuyRound(const int index, const int amountToBuy)

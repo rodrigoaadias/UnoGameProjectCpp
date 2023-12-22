@@ -33,7 +33,7 @@ void Match::Tick()
 void Match::StartNewMatch()
 {
     Core::LogMessage("Starting Match: " + GetName());
-    PlayersCount = GetNumberOfPlayers();
+    PlayersCount = ReadNumberOfPlayers();
     JoinPlayers(PlayersCount);
     CreateDeck();
     SortCardsToPlayers();
@@ -42,7 +42,7 @@ void Match::StartNewMatch()
     MatchReady = true;
 }
 
-int Match::GetNumberOfPlayers()
+int Match::ReadNumberOfPlayers()
 {
     int numPlayers = Core::GetInput<int>("How many players will join this match? (Must be between 2 and 10): ");
     while (numPlayers < 2 || numPlayers > 10)
@@ -210,6 +210,21 @@ void Match::Restart()
     SetupTurn();
 
     MatchReady = true; 
+}
+
+int Match::GetPlayersAmount() const
+{
+    return JoinedPlayers.size();
+}
+
+EntityPtr<Player> Match::GetCurrentPlayer() const
+{
+    return JoinedPlayers.at(CurrentPlayerIndex);
+}
+
+std::vector<EntityPtr<Player>> Match::GetPlayers() const
+{
+    return JoinedPlayers;
 }
 
 void Match::FinishMatch()

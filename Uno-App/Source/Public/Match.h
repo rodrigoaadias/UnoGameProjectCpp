@@ -43,9 +43,12 @@ public:
     void Tick() override;
 
     void StartNewMatch();
-    int GetNumberOfPlayers();
+    int ReadNumberOfPlayers();
 
     void ReverseFlow();
     bool IsMatchEnded() const;
     void Restart();
+    int GetPlayersAmount() const;
+    EntityPtr<Player> GetCurrentPlayer() const;
+    std::vector<EntityPtr<Player>> GetPlayers() const;
 };
