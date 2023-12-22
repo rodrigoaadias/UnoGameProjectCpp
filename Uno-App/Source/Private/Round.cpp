@@ -1,22 +1,9 @@
-#include "Round.h"
+#include "Public/Round.h"
 #include "Public/DeckController.h"
-#include "Card.h"
-#include "ETurnFlow.h"
-#include "Player.h"
+#include "Public/Card.h"
+#include "Public/ETurnFlow.h"
+#include "Public/Player.h"
 #include "Core/Core.h"
-
-std::string Round::GetFlowName(const ETurnFlow& flow) const
-{
-    switch (flow)
-    {
-    case ETurnFlow::Clockwise:
-        return  "Clockwise";
-    case ETurnFlow::AntiClockwise:
-        return "Anti-clockwise";
-    }
-
-    return "Invalid flow";
-}
 
 Round::Round(int index)
     :Entity{"Round " + std::to_string(index)}, RoundIndex{index}

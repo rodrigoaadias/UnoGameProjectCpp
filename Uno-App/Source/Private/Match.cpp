@@ -5,6 +5,8 @@
 #include "Public/Player.h"
 #include "Public/ICustomRoundCard.h"
 #include "Public/Round.h"
+#include "Public/IPostRoundAction.h"
+#include "Public/MustBuyCard.h"
 
 Match::Match(const std::string& matchName)
     : Entity{matchName}, CurrentTurn{0}, Flow{ETurnFlow::Clockwise}
@@ -99,6 +101,20 @@ void Match::SetupTurnFlow()
     Flow = Core::RandomRange(0, 1) == 0 ? ETurnFlow::Clockwise : ETurnFlow::AntiClockwise;
 }
 
+void Match::PostRoundAction(const EntityPtr<Card>& tossedCard)
+{
+    if(LastCard == tossedCard)
+    {
+        return;
+    }
+
+    auto* postRound = tossedCard.ImplementsInterface<IPostRoundAction>();
+    if(postRound != nullptr)
+    {
+        postRound->Execute(this);
+    }
+}
+
 void Match::IncreaseTurn()
 {
     CurrentTurn++;
@@ -115,7 +131,7 @@ void Match::IncreaseTurn()
     }
 }
 
-void Match::PlayTurn()
+EntityPtr<Round> Match::MakeRound()
 {
     const auto currentPlayerTurn = JoinedPlayers[CurrentPlayerIndex];
     EntityPtr<Round> newRound;
@@ -124,7 +140,7 @@ void Match::PlayTurn()
     const auto tossedCard = Deck->GetLastTossedCard();
     if(tossedCard.IsValid() && tossedCard != LastCard)
     {
-        const auto customRoundCard = std::dynamic_pointer_cast<ICustomRoundCard>(*tossedCard.Instance);
+        const auto customRoundCard = tossedCard.ImplementsInterface<ICustomRoundCard>();
         if (customRoundCard != nullptr)
         {
             newRound = customRoundCard->GetCustomRound(CurrentTurn);
@@ -137,7 +153,16 @@ void Match::PlayTurn()
         newRound = EntityPtr<Round>::MakeEntityPtr(CurrentTurn);
     }
 
-    LastCard = tossedCard;
+    return newRound;
+}
+
+void Match::PlayTurn()
+{
+    const auto currentPlayerTurn = JoinedPlayers[CurrentPlayerIndex];
+
+    EntityPtr<Round> newRound = MakeRound();
+    LastCard = Deck->GetLastTossedCard();
+
     newRound->RunRound(currentPlayerTurn, Deck, Flow);
 
     if(currentPlayerTurn->GetCards().empty())
@@ -147,13 +172,18 @@ void Match::PlayTurn()
         return;
     }
 
+    PostRoundAction(Deck->GetLastTossedCard());
+
     IncreaseTurn();
 
     Core::WaitAnyKey("Press any key to go to next turn");
 }
 
 void Match::ReverseFlow()
-{}
+{
+    Flow = Flow == ETurnFlow::Clockwise ? ETurnFlow::AntiClockwise : ETurnFlow::Clockwise;
+    Core::WaitAnyKey("THE FLOW OF THE GAME HAS CHANGED! New flow: " + GetFlowName(Flow));
+}
 
 bool Match::IsMatchEnded()
 {

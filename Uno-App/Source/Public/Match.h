@@ -4,6 +4,7 @@
 #include "Core/EntityPtr.h"
 #include "Core/Public/Entity.h"
 
+class Round;
 class Card;
 class Player;
 class DeckController;
@@ -23,7 +24,9 @@ class Match : public Entity
     EntityPtr<DeckController> Deck;
 
     EntityPtr<Player> CreatePlayer(const int& index);
+    void PostRoundAction(const EntityPtr<Card>& tossedCard);
     void IncreaseTurn();
+    EntityPtr<Round> MakeRound();
     EntityPtr<Card> LastCard; 
 
 public:

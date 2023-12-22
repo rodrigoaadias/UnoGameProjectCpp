@@ -12,7 +12,6 @@ class Player : public Entity
     bool HasYelled;
     std::vector<EntityPtr<Card>> CardsOnHand;
     void AddCardToHand(EntityPtr<Card> card);
-    bool CanTossCard(const EntityPtr<Card>& lastTossedCard);
     EntityPtr<Card> PopCardFrom(uint32_t index);
 
     void TryYell();
@@ -26,6 +25,7 @@ public:
     Player(const std::string& name, const int& index);
     std::string GetDisplayName();
 
+    bool CanTossCard(const EntityPtr<Card>& lastTossedCard);
     void BuyDeckCard(const std::weak_ptr<DeckController>& deckController);
     void PlayTurn(const std::weak_ptr<DeckController>& deckController);
     std::string ToString();

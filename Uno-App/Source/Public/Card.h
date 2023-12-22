@@ -20,7 +20,7 @@ public:
     EColor GetColor() const { return Color; }
 
     virtual std::string GetCardTypeName() const = 0;
-    virtual bool CanBeTossed(EntityPtr<Card> other);
+    virtual bool CanTossCardOnMe(EntityPtr<Card> other);
 
     static std::vector<std::string> GetDisplayCard(const Card& card);  
     static void DrawCards(const std::vector<EntityPtr<Card>>& cards, bool drawOption = false);

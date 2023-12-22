@@ -9,7 +9,7 @@ std::string ReverseCard::GetCardTypeName() const
     return "Reverse";
 }
 
-bool ReverseCard::CanBeTossed(EntityPtr<Card> other)
+bool ReverseCard::CanTossCardOnMe(EntityPtr<Card> other)
 {
     if(other.IsValid())
     {
@@ -20,5 +20,10 @@ bool ReverseCard::CanBeTossed(EntityPtr<Card> other)
         }
     }
 
-    return Card::CanBeTossed(other);
+    return Card::CanTossCardOnMe(other);
+}
+
+void ReverseCard::Execute(Match* currentMatch)
+{
+    currentMatch->ReverseFlow();
 }

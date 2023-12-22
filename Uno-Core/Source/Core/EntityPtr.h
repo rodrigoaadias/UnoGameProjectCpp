@@ -45,7 +45,7 @@ public:
     }
 
     template <typename TOther>
-    explicit operator EntityPtr<TOther>()
+    explicit operator EntityPtr<TOther>() const
     {
         std::shared_ptr<TOther> castedInstance = std::dynamic_pointer_cast<TOther>(*Instance);
         if(castedInstance)
@@ -55,6 +55,18 @@ public:
         }
 
         return EntityPtr<TOther>{};
+    }
+
+    template<class TInterface>
+    TInterface* ImplementsInterface() const
+    {
+        std::shared_ptr<TInterface> interface = std::dynamic_pointer_cast<TInterface>(*Instance);
+        if(interface != nullptr)
+        {
+            return interface.get();
+        }
+
+        return nullptr;
     }
 
     bool IsValid() const
