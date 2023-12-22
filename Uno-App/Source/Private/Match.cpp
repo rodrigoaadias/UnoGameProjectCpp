@@ -24,7 +24,7 @@ void Match::Tick()
 {
     Entity::Tick();
 
-    if(bMatchReady && !IsMatchEnded())
+    if(MatchReady && !IsMatchEnded())
     {
         PlayTurn();
     }
@@ -37,9 +37,9 @@ void Match::StartNewMatch()
     JoinPlayers(PlayersCount);
     CreateDeck();
     SortCardsToPlayers();
-    SetupTurnFlow();
+    SetupTurn();
 
-    bMatchReady = true;
+    MatchReady = true;
 }
 
 int Match::GetNumberOfPlayers()
@@ -95,8 +95,9 @@ void Match::SortCardsToPlayers()
     }
 }
 
-void Match::SetupTurnFlow()
+void Match::SetupTurn()
 {
+    CurrentTurn = 0;
     CurrentPlayerIndex = Core::RandomRange(0, PlayersCount - 1);
     Flow = Core::RandomRange(0, 1) == 0 ? ETurnFlow::Clockwise : ETurnFlow::AntiClockwise;
 }
@@ -185,12 +186,34 @@ void Match::ReverseFlow()
     Core::WaitAnyKey("THE FLOW OF THE GAME HAS CHANGED! New flow: " + GetFlowName(Flow));
 }
 
-bool Match::IsMatchEnded()
+bool Match::IsMatchEnded() const
 {
-    return bMatchFinished;
+    return MatchFinished;
+}
+
+void Match::Restart()
+{
+    for (EntityPtr<Player>& player : JoinedPlayers)
+    {
+        for (EntityPtr<Card>& playerCard : player->GetCards())
+        {
+            Deck->AddCardToDeck(playerCard);
+        }
+        player->GetCards().clear();
+    }
+
+    Deck->ShuffleTossedCardsBackToDeck();
+    MatchFinished = false;
+
+    Core::LogMessage("Restarting Match: " + GetName());
+    SortCardsToPlayers();
+    SetupTurn();
+
+    MatchReady = true; 
 }
 
 void Match::FinishMatch()
 {
-    bMatchFinished = true;
+    MatchReady = false;
+    MatchFinished = true;
 }

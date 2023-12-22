@@ -46,3 +46,8 @@ int Core::RandomRange(int min, int maxInclusive)
 
     return distribution(mt);
 }
+
+void Core::ClearConsole()
+{
+    system("cls");
+}

@@ -18,7 +18,7 @@ void Round::RunRound(EntityPtr<Player> currentPlayer, EntityPtr<DeckController>&
 
 void Round::DrawTurn(EntityPtr<Player> player, EntityPtr<DeckController> deckController, const ETurnFlow& turnFlow) const
 {
-    system("cls");
+    Core::ClearConsole();
     Core::LogMessage("ROUND " + std::to_string(RoundIndex) + ": " + player->GetDisplayName() + "'s turn!");
     Core::LogMessage("Flow: " + GetFlowName(turnFlow));
     Core::LogMessage("Cards on Deck: " + std::to_string(deckController->GetAmountOfDeckCards()));

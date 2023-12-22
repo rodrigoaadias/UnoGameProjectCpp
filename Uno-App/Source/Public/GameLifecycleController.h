@@ -7,10 +7,12 @@ class Player;
 
 class GameLifecycleController : public Entity
 {
-public:
     EntityPtr<Match> CurrentMatch;
+    void ShowRestartOptions();
+public:
     
     GameLifecycleController(const std::string& name);
+    void CreateMatch();
     void Begin() override;
     void Tick() override;
 };
