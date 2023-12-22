@@ -17,8 +17,8 @@ class Match : public Entity
     int CurrentPlayerIndex;
     int PlayersCount;
     ETurnFlow Flow;
-    bool bMatchReady{false};
-    bool bMatchFinished{false};
+    bool MatchReady{false};
+    bool MatchFinished{false};
     
     std::vector<EntityPtr<Player>> JoinedPlayers;
     EntityPtr<DeckController> Deck;
@@ -27,7 +27,14 @@ class Match : public Entity
     void PostRoundAction(const EntityPtr<Card>& tossedCard);
     void IncreaseTurn();
     EntityPtr<Round> MakeRound();
-    EntityPtr<Card> LastCard; 
+    EntityPtr<Card> LastCard;
+
+    void JoinPlayers(const int& number);
+    void CreateDeck();
+    void SortCardsToPlayers();
+    void SetupTurn();
+    void PlayTurn();
+    void FinishMatch();
 
 public:
     Match(const std::string& matchName);
@@ -37,12 +44,8 @@ public:
 
     void StartNewMatch();
     int GetNumberOfPlayers();
-    void JoinPlayers(const int& number);
-    void CreateDeck();
-    void SortCardsToPlayers();
-    void SetupTurnFlow();
-    void PlayTurn();
+
     void ReverseFlow();
-    bool IsMatchEnded();
-    void FinishMatch();
+    bool IsMatchEnded() const;
+    void Restart();
 };

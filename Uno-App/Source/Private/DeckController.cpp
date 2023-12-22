@@ -97,13 +97,11 @@ bool DeckController::IsDeckEmpty() const
 
 void DeckController::ShuffleTossedCardsBackToDeck()
 {
-    const EntityPtr<Card> topCard = PopFromStack();
     while (!TossedCards.empty())
     {
         DeckCards.emplace_back(PopFromStack());
     }
 
-    AddCardToTable(topCard);
     ShuffleDeckCards();
 }
 
@@ -116,7 +114,9 @@ EntityPtr<Card> DeckController::BuyCardFromDeck()
 {
     if(DeckCards.empty())
     {
+        const EntityPtr<Card> lastTossedCard = PopFromStack();
         ShuffleTossedCardsBackToDeck();
+        AddCardToTable(lastTossedCard);
     }
 
     auto topCard = DeckCards.back();
