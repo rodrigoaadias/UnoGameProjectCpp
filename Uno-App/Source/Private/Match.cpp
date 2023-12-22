@@ -5,7 +5,6 @@
 #include "Public/Player.h"
 #include "Public/ICustomRoundCard.h"
 #include "Public/Round.h"
-
 #include "Public/IPostRoundAction.h"
 #include "Public/MustBuyCard.h"
 
@@ -89,7 +88,7 @@ void Match::SortCardsToPlayers()
 
     for (auto player : JoinedPlayers)
     {
-        for (int i=0; i < 7; i++)
+        for (int i=0; i < INITIAL_CARDS_PER_PLAYER; i++)
         {
             player->BuyDeckCard(Deck.get());
         }
@@ -134,7 +133,10 @@ void Match::IncreaseTurn()
 
 EntityPtr<Round> Match::MakeRound()
 {
+    const auto currentPlayerTurn = JoinedPlayers[CurrentPlayerIndex];
     EntityPtr<Round> newRound;
+
+    // execute pre turn actions
     const auto tossedCard = Deck->GetLastTossedCard();
     if(tossedCard.IsValid() && tossedCard != LastCard)
     {
@@ -145,6 +147,7 @@ EntityPtr<Round> Match::MakeRound()
         }
     }
 
+    // Run turn
     if(!newRound.IsValid())
     {
         newRound = EntityPtr<Round>::MakeEntityPtr(CurrentTurn);
