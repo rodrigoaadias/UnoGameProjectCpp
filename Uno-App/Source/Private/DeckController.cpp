@@ -95,8 +95,6 @@ void DeckController::ShuffleDeckCards()
 {
     const unsigned seed = static_cast<unsigned>(std::chrono::system_clock::now().time_since_epoch().count());
     std::ranges::shuffle(DeckCards, std::default_random_engine(seed));
-
-    CreateExtraCards();
 }
 
 void DeckController::AddCardToDeck(EntityPtr<Card>& card)
