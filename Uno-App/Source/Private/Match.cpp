@@ -5,7 +5,6 @@
 #include "Public/Player.h"
 #include "Public/ICustomRoundCard.h"
 #include "Public/Round.h"
-#include <stdlib.h>
 
 Match::Match(const std::string& matchName)
     : Entity{matchName}, CurrentTurn{0}, Flow{ETurnFlow::Clockwise}
@@ -87,7 +86,7 @@ void Match::SortCardsToPlayers()
 
     for (auto player : JoinedPlayers)
     {
-        for (int i=0; i < 7; i++)
+        for (int i=0; i < INITIAL_CARDS_PER_PLAYER; i++)
         {
             player->BuyDeckCard(Deck.get());
         }
