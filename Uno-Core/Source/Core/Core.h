@@ -2,8 +2,12 @@
 #include <iostream>
 #include <string>
 
+#define TEXT(x) x
+
 class Core {
-    inline static bool WantsToClose = false;
+    inline static bool WantsToClose{false};
+    inline static const char* RED_COLOR = "\033[31m";
+    inline static const char* DEFAULT_COLOR = "\033[0m";
 
 public:
 	static void RunEngine();
@@ -15,7 +19,7 @@ public:
         TData returnValue;
         std::cout << message;
         std::cin >> returnValue;
-        std::cout << std::endl;
+        std::cout << "\n";
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
@@ -23,8 +27,8 @@ public:
     }
 
     static void WaitAnyKey(const std::string& message);
-    static void LogMessage(const std::string& message);
-    static void LogError(const std::string& errorMessage);
+    static void LogMessage(std::string_view message);
+    static void LogError(std::string_view errorMessage);
     static int RandomRange(int min, int maxInclusive);
     static void ClearConsole();
 };

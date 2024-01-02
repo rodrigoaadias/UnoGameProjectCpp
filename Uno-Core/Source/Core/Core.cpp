@@ -1,6 +1,7 @@
 #include "Core.h"
-
 #include <random>
+#include <ranges>
+#include <sstream>
 
 #include "Public/Engine.h"
 
@@ -29,17 +30,19 @@ void Core::WaitAnyKey(const std::string& message)
     std::cin.get();
 }
 
-void Core::LogMessage(const std::string& message)
+void Core::LogMessage(const std::string_view message)
 {
-    std::cout << message << std::endl;
+    std::cout << message << "\n";
 }
 
-void Core::LogError(const std::string& errorMessage)
+void Core::LogError(const std::string_view errorMessage)
 {
-    LogMessage("\033[31m" + errorMessage + "\033[0m");
+    std::stringstream stream;
+    stream << RED_COLOR << errorMessage << DEFAULT_COLOR;
+    LogMessage(stream.view());
 }
 
-int Core::RandomRange(int min, int maxInclusive)
+int Core::RandomRange(const int min, const int maxInclusive)
 {
     std::mt19937 mt{std::random_device{}()};
     std::uniform_int_distribution distribution = std::uniform_int_distribution{min, maxInclusive};
