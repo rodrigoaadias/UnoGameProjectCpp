@@ -156,6 +156,24 @@ void Player::PlayTurn(const std::weak_ptr<DeckController>& deckController)
     }
 }
 
+void Player::SwitchHandsWith(EntityPtr<Player>& other)
+{
+    const std::vector<EntityPtr<Card>> cachedCards = CardsOnHand;
+    CardsOnHand.clear();
+
+    for (const auto& otherCard : other->GetCards())
+    {
+        CardsOnHand.emplace_back(otherCard);
+    }
+
+    other->GetCards().clear();
+
+    for (const auto& cacheCard : cachedCards)
+    {
+        other->AddCardToHand(cacheCard);
+    }
+}
+
 std::string Player::ToString()
 {
     std::string cardsToString =  std::to_string(CardsOnHand.size()) + " Cards on hand\n";

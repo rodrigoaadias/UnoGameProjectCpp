@@ -17,6 +17,7 @@ class DeckController : public Entity
     void CreateNumberCardInAllColors(int number);
     void CreateNumberCardOfColor(int number, EColor color);
     void CreateSpecialCardsByColor(EColor color);
+    void CreateExtraCards();
     void EmplaceCreatedCard(EntityPtr<Card> card);
     EntityPtr<Card> PopFromStack();
 public:

@@ -7,6 +7,7 @@
 #include "Public/MustBuyCard.h"
 #include "Public/NumberCard.h"
 #include "Public/ReverseCard.h"
+#include "Public/SwitchHandCard.h"
 
 DeckController::DeckController(const std::string& name)
     : Entity{name}
@@ -27,6 +28,8 @@ void DeckController::CreateCards()
     CreateSpecialCardsByColor(EColor::Red);
     CreateSpecialCardsByColor(EColor::Green);
     CreateSpecialCardsByColor(EColor::Yellow);
+
+    CreateExtraCards();
 
     Core::LogMessage("Cards created! Total of cards available: " + std::to_string(AllCards.size()));
 }
@@ -61,6 +64,15 @@ void DeckController::CreateSpecialCardsByColor(EColor color)
     }
 }
 
+void DeckController::CreateExtraCards()
+{
+    for (int i=0; i < 4; i++)
+    {
+        const EntityPtr<Card> switchHandCard = static_cast<EntityPtr<Card>>(EntityPtr<SwitchHandCard>::MakeEntityPtr());
+        EmplaceCreatedCard(switchHandCard);
+    }
+}
+
 void DeckController::EmplaceCreatedCard(EntityPtr<Card> card)
 {    
     AllCards.emplace_back(card);
@@ -71,7 +83,7 @@ EntityPtr<Card> DeckController::PopFromStack()
 {
     if(TossedCards.empty())
     {
-        return EntityPtr<Card>();
+        return {};
     }
 
     auto topCard = TossedCards.top();

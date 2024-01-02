@@ -7,7 +7,8 @@ enum class EColor : uint8_t
     Blue,
     Yellow,
     Red,
-    Green
+    Green,
+    None
 };
 
 static std::string getColorName(EColor color)
