@@ -4,7 +4,15 @@
 
 class ICustomRoundCard
 {
+    ICustomRoundCard() = default;
+    
 public:
-    virtual EntityPtr<Round> GetCustomRound(int roundIndex) = 0;    
+    ICustomRoundCard(ICustomRoundCard& other) = delete;
+    ICustomRoundCard(ICustomRoundCard&& other) = delete;
+
+    ICustomRoundCard& operator = (const ICustomRoundCard& other) = delete;
+    ICustomRoundCard& operator = (const ICustomRoundCard&& other) = delete;    
+
+    virtual EntityPtr<Round> GenerateCustomRound(int roundIndex) = 0;    
     virtual ~ICustomRoundCard() = default;
 };

@@ -32,7 +32,7 @@ bool MustBuyCard::CanTossCardOnMe(const EntityPtr<Card>& other) const
     return !IsInRound && Card::CanTossCardOnMe(other);
 }
 
-EntityPtr<Round> MustBuyCard::GetCustomRound(int roundIndex)
+EntityPtr<Round> MustBuyCard::GenerateCustomRound(int roundIndex)
 {
     IsInRound = true;
     return static_cast<EntityPtr<Round>>(Engine::CreateEntity<MustBuyRound>(roundIndex, AmountToBuy + Cumulated));

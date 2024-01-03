@@ -144,7 +144,7 @@ EntityPtr<Round> Match::MakeRound()
         const auto customRoundCard = tossedCard.ImplementsInterface<ICustomRoundCard>();
         if (customRoundCard != nullptr)
         {
-            newRound = customRoundCard->GetCustomRound(CurrentTurn);
+            newRound = customRoundCard->GenerateCustomRound(CurrentTurn);
         }
     }
 

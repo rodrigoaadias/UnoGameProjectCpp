@@ -17,6 +17,6 @@ public:
 
     std::string GetCardTypeName() const override;
     bool CanTossCardOnMe(const EntityPtr<Card>& other) const override;
-    EntityPtr<Round> GetCustomRound(int roundIndex) override;
+    EntityPtr<Round> GenerateCustomRound(int roundIndex) override;
     void ClearRound();
 };
