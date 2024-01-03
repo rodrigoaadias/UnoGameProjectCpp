@@ -2,18 +2,18 @@
 #include "Statics.h"
 #include "Core/Core.h"
 
-Card::Card(const std::string& name, const EColor& color)
+Card::Card(const std::string& name, const EColor color)
     : Entity{GetColorName(color) + " " + name}, Color{color}
 {}
 
-const EColor& Card::GetColor() const
+EColor Card::GetColor() const
 {
     return Color;
 }
 
 std::string Card::GetDisplayTypename(const Card& card)
 {
-    std::string typeName = card.GetCardTypeName().data();
+    std::string typeName = card.GetCardTypeName();
     bool bBefore = false;
     while (typeName.length() < LINE_WIDTH-2)
     {
@@ -36,7 +36,7 @@ std::string Card::GetDisplayTypename(const Card& card)
     return typeName;
 }
 
-std::string Card::GetConsoleColorCode(const EColor& color)
+std::string Card::GetConsoleColorCode(const EColor color)
 {
     switch (color)
     {
@@ -115,7 +115,7 @@ void Card::Draw() const
     }
 }
 
-void Card::AddToLineIndex(std::vector<std::string>& lines, const std::string& text, const int& i)
+void Card::AddToLineIndex(std::vector<std::string>& lines, const std::string& text, const int i)
 {
     if(static_cast<int>(lines.size()) <= i)
     {               
@@ -127,8 +127,8 @@ void Card::AddToLineIndex(std::vector<std::string>& lines, const std::string& te
     }
 }
 
-void Card::DrawCardsFromTo(const std::vector<EntityPtr<Card>>& cards, const bool& drawOption,
-    const int& from, const int& to)
+void Card::DrawCardsFromTo(const std::vector<EntityPtr<Card>>& cards, const bool drawOption,
+    const int from, const int to)
 {
     std::vector<std::string> lines;
     const int startAdding = drawOption ? 1 : 0;
@@ -164,7 +164,7 @@ void Card::DrawCardsFromTo(const std::vector<EntityPtr<Card>>& cards, const bool
     }
 }
 
-void Card::DrawCards(const std::vector<EntityPtr<Card>>& cards, const bool& drawOption)
+void Card::DrawCards(const std::vector<EntityPtr<Card>>& cards, const bool drawOption)
 {
     for (int i=0; i < static_cast<int>(cards.size()); i+=CARDS_PER_LINE)
     {
