@@ -10,5 +10,5 @@ public:
 
     int GetNumber() const { return Number; }
     std::string GetCardTypeName() const override;
-    bool CanTossCardOnMe(EntityPtr<Card> other) override;
+    bool CanTossCardOnMe(const EntityPtr<Card>& other) const override;
 };

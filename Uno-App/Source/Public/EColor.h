@@ -11,7 +11,7 @@ enum class EColor : uint8_t
     None
 };
 
-static std::string getColorName(EColor color)
+static std::string GetColorName(const EColor& color)
 {
     switch (color)
     {
@@ -23,6 +23,8 @@ static std::string getColorName(EColor color)
         return "Red";
     case EColor::Green:
         return "Green";
+    case EColor::None:
+        return "---";
     }
 
     return "Invalid";

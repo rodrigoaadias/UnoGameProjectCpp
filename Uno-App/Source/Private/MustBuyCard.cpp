@@ -17,7 +17,7 @@ std::string MustBuyCard::GetCardTypeName() const
     return "+" + std::to_string(AmountToBuy);
 }
 
-bool MustBuyCard::CanTossCardOnMe(EntityPtr<Card> other)
+bool MustBuyCard::CanTossCardOnMe(const EntityPtr<Card>& other) const
 {
     if(other.IsValid())
     {

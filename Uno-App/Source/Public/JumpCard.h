@@ -10,5 +10,5 @@ public:
 
     EntityPtr<Round> GetCustomRound(int roundIndex) override;
     
-    bool CanTossCardOnMe(EntityPtr<Card> other) override;
+    bool CanTossCardOnMe(const EntityPtr<Card>& other) const override;
 };

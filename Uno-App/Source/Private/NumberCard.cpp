@@ -9,7 +9,7 @@ std::string NumberCard::GetCardTypeName() const
     return std::to_string(Number);
 }
 
-bool NumberCard::CanTossCardOnMe(EntityPtr<Card> other)
+bool NumberCard::CanTossCardOnMe(const EntityPtr<Card>& other) const
 {
     if(other.IsValid())
     {

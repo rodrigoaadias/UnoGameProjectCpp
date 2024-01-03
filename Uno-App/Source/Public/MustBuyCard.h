@@ -16,7 +16,7 @@ public:
     void Cumulate(int amount);
 
     std::string GetCardTypeName() const override;
-    bool CanTossCardOnMe(EntityPtr<Card> other) override;
+    bool CanTossCardOnMe(const EntityPtr<Card>& other) const override;
     EntityPtr<Round> GetCustomRound(int roundIndex) override;
     void ClearRound();
 };

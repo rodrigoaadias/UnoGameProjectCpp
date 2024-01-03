@@ -2,13 +2,18 @@
 #include "Statics.h"
 #include "Core/Core.h"
 
-Card::Card(const std::string& name, const EColor color)
-    : Entity{getColorName(color) + " " + name}, Color{color}
+Card::Card(const std::string& name, const EColor& color)
+    : Entity{GetColorName(color) + " " + name}, Color{color}
 {}
 
-std::string Card::GetTypename(const Card& card)
+const EColor& Card::GetColor() const
 {
-    std::string typeName = card.GetCardTypeName();
+    return Color;
+}
+
+std::string Card::GetDisplayTypename(const Card& card)
+{
+    std::string typeName = card.GetCardTypeName().data();
     bool bBefore = false;
     while (typeName.length() < LINE_WIDTH-2)
     {
@@ -31,7 +36,7 @@ std::string Card::GetTypename(const Card& card)
     return typeName;
 }
 
-std::string Card::GetConsoleColorCode(EColor color)
+std::string Card::GetConsoleColorCode(const EColor& color)
 {
     switch (color)
     {
@@ -43,12 +48,14 @@ std::string Card::GetConsoleColorCode(EColor color)
         return "\033[31m";
     case EColor::Green:
         return "\033[32m";
+    case EColor::None:
+        return DEFAULT_COLOR;
     }
 
     return DEFAULT_COLOR;
 }
 
-bool Card::CanTossCardOnMe(EntityPtr<Card> other)
+bool Card::CanTossCardOnMe(const EntityPtr<Card>& other) const
 {
     return !other.IsValid() || Color == other->GetColor() || other->GetColor() == EColor::None || Color == EColor::None;
 }
@@ -57,7 +64,9 @@ std::vector<std::string> Card::GetDisplayCard(const Card& card)
 {
     std::vector<std::string> returnValue;
     returnValue.reserve(COLUMN_HEIGHT);
-    std::string displayColor = getColorName(card.GetColor());
+
+    std::string displayColor = GetColorName(card.GetColor());
+
     bool bBefore = true;
     while (displayColor.length() < COLOR_DISPLAY_SIZE)
     {
@@ -75,7 +84,7 @@ std::vector<std::string> Card::GetDisplayCard(const Card& card)
 
     const std::string colorLine = GetConsoleColorCode(card.Color) + "XX" + displayColor + "XX" + DEFAULT_COLOR;
     const std::string defaultLine = GetConsoleColorCode(card.Color) + "X         X" + DEFAULT_COLOR;  
-    const std::string centerLine = GetConsoleColorCode(card.Color) + "X" + GetTypename(card) + "X" + DEFAULT_COLOR;
+    const std::string centerLine = GetConsoleColorCode(card.Color) + "X" + GetDisplayTypename(card) + "X" + DEFAULT_COLOR;
 
     // build string vector
     for (int i=0; i < COLUMN_HEIGHT; i++)
@@ -106,7 +115,7 @@ void Card::Draw() const
     }
 }
 
-void Card::AddToLineIndex(std::vector<std::string>& lines, const std::string& text, int i)
+void Card::AddToLineIndex(std::vector<std::string>& lines, const std::string& text, const int& i)
 {
     if(static_cast<int>(lines.size()) <= i)
     {               
@@ -118,8 +127,8 @@ void Card::AddToLineIndex(std::vector<std::string>& lines, const std::string& te
     }
 }
 
-void Card::DrawCardsFromTo(const std::vector<EntityPtr<Card>>& cards, const bool drawOption,
-    const int from, const int to)
+void Card::DrawCardsFromTo(const std::vector<EntityPtr<Card>>& cards, const bool& drawOption,
+    const int& from, const int& to)
 {
     std::vector<std::string> lines;
     const int startAdding = drawOption ? 1 : 0;
@@ -155,7 +164,7 @@ void Card::DrawCardsFromTo(const std::vector<EntityPtr<Card>>& cards, const bool
     }
 }
 
-void Card::DrawCards(const std::vector<EntityPtr<Card>>& cards, bool drawOption)
+void Card::DrawCards(const std::vector<EntityPtr<Card>>& cards, const bool& drawOption)
 {
     for (int i=0; i < static_cast<int>(cards.size()); i+=CARDS_PER_LINE)
     {
