@@ -3,10 +3,9 @@
 #include "Core/EntityPtr.h"
 
 class ICustomRoundCard
-{
-    ICustomRoundCard() = default;
-    
+{    
 public:
+    ICustomRoundCard() = default;
     ICustomRoundCard(ICustomRoundCard& other) = delete;
     ICustomRoundCard(ICustomRoundCard&& other) = delete;
 

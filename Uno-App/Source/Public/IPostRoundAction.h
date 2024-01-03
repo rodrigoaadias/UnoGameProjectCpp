@@ -3,8 +3,8 @@
 
 class IPostRoundAction
 {
-    IPostRoundAction() = default;
 public:
+    IPostRoundAction() = default;
     IPostRoundAction(const IPostRoundAction& other) = delete;
     IPostRoundAction(const IPostRoundAction&& other) = delete;
 

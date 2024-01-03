@@ -1,9 +1,8 @@
 #include "Public/JumpCard.h"
-
 #include "Core/Public/Engine.h"
 #include "Public/JumpRound.h"
 
-JumpCard::JumpCard(const EColor& color)
+JumpCard::JumpCard(const EColor color)
     :Card{"Jump Card", color}
 {}
 
