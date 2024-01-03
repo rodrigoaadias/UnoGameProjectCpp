@@ -6,5 +6,5 @@ class JumpRound : public Round
 public:
     JumpRound(int index);
 
-    void RunRound(EntityPtr<Player> currentPlayer, EntityPtr<DeckController>& deckController, const ETurnFlow& turnFlow) override;
+    void RunRound(const EntityPtr<Player>& currentPlayer, const EntityPtr<DeckController>& deckController, ETurnFlow turnFlow) override;
 };

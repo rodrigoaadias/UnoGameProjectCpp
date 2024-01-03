@@ -12,10 +12,10 @@ class Round : public Entity
 protected:
     int RoundIndex;
     
-    void DrawTurn(EntityPtr<Player> player, EntityPtr<DeckController> deckController, const ETurnFlow& turnFlow) const;
+    void DrawTurn(const EntityPtr<Player>& player, const EntityPtr<DeckController>& deckController, const ETurnFlow& turnFlow) const;
 
 public:
     Round(int index);
 
-    virtual void RunRound(EntityPtr<Player> currentPlayer, EntityPtr<DeckController>& deckController, const ETurnFlow& turnFlow);
+    virtual void RunRound(const EntityPtr<Player>& currentPlayer, const EntityPtr<DeckController>& deckController, ETurnFlow turnFlow);
 };

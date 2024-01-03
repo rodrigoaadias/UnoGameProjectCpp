@@ -102,7 +102,7 @@ public:
         return Instance && *Instance != nullptr;
     }
 
-    std::weak_ptr<TElement> GetWeakPtr()
+    std::weak_ptr<TElement> GetWeakPtr() const
     {        
         assert(IsValid());
         
