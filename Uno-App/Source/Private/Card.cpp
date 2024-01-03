@@ -136,7 +136,7 @@ void Card::DrawCardsFromTo(const std::vector<EntityPtr<Card>>& cards, const bool
         }
 
         std::string spaceBetweenCards = "      ";
-        std::vector<std::string> cardDisplay = Card::GetDisplayCard(**card.Instance);
+        std::vector<std::string> cardDisplay = Card::GetDisplayCard(card.GetRef());
         if(drawOption)
         {
             std::string space = k < 10 ? "  " : " ";

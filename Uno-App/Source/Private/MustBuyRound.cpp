@@ -15,7 +15,7 @@ void MustBuyRound::BuyCumulatedCards(EntityPtr<Player> currentPlayer, EntityPtr<
     cardsToDraw.reserve(AmountToBuy);
     for (int i=0; i < AmountToBuy; i++)
     {
-        currentPlayer->BuyDeckCard(deckController.get());
+        currentPlayer->BuyDeckCard(deckController.GetWeakPtr());
         cardsToDraw.emplace_back(currentPlayer->GetCards().back());
     }
 
@@ -30,7 +30,7 @@ void MustBuyRound::RunRound(EntityPtr<Player> currentPlayer, EntityPtr<DeckContr
     EntityPtr<Card> cardOnTable = deckController->GetLastTossedCard();
     if(currentPlayer->CanTossCard(cardOnTable))
     {
-        currentPlayer->PlayTurn(deckController.get());
+        currentPlayer->PlayTurn(deckController.GetWeakPtr());
         EntityPtr<MustBuyCard> newMustBuy = static_cast<EntityPtr<MustBuyCard>>(deckController->GetLastTossedCard());
         newMustBuy->Cumulate(AmountToBuy);
     }

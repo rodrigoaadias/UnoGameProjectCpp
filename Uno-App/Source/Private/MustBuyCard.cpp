@@ -1,5 +1,6 @@
 #include "Public/MustBuyCard.h"
 
+#include "Core/Public/Engine.h"
 #include "Public/MustBuyRound.h"
 
 MustBuyCard::MustBuyCard(const EColor& color, int amountToBuy)
@@ -34,7 +35,7 @@ bool MustBuyCard::CanTossCardOnMe(EntityPtr<Card> other)
 EntityPtr<Round> MustBuyCard::GetCustomRound(int roundIndex)
 {
     IsInRound = true;
-    return static_cast<EntityPtr<Round>>(EntityPtr<MustBuyRound>::MakeEntityPtr(roundIndex, AmountToBuy + Cumulated));
+    return static_cast<EntityPtr<Round>>(Engine::CreateEntity<MustBuyRound>(roundIndex, AmountToBuy + Cumulated));
 }
 
 void MustBuyCard::ClearRound()

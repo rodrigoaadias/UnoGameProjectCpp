@@ -74,12 +74,12 @@ EntityPtr<Player> Match::CreatePlayer(const int& index)
         }
     }
 
-    return EntityPtr<Player>::MakeEntityPtr(playerName, index);
+    return Engine::CreateEntity<Player>(playerName, index);
 }
 
 void Match::CreateDeck()
 {
-    Deck = EntityPtr<DeckController>::MakeEntityPtr("Deck Controller");
+    Deck = Engine::CreateEntity<DeckController>("Deck Controller");
 }
 
 void Match::SortCardsToPlayers()
@@ -90,7 +90,7 @@ void Match::SortCardsToPlayers()
     {
         for (int i=0; i < INITIAL_CARDS_PER_PLAYER; i++)
         {
-            player->BuyDeckCard(Deck.get());
+            player->BuyDeckCard(Deck.GetWeakPtr());
         }
     }
 }
@@ -151,7 +151,7 @@ EntityPtr<Round> Match::MakeRound()
     // Run turn
     if(!newRound.IsValid())
     {
-        newRound = EntityPtr<Round>::MakeEntityPtr(CurrentTurn);
+        newRound = Engine::CreateEntity<Round>(CurrentTurn);
     }
 
     return newRound;

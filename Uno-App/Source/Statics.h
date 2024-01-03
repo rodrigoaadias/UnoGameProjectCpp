@@ -11,7 +11,7 @@ TInterface* ImplementsInterface(std::shared_ptr<TObjectType> sharedPtr)
     std::shared_ptr<TInterface> interface = std::dynamic_pointer_cast<TInterface>(sharedPtr);
     if(interface != nullptr)
     {
-        return interface.get();
+        return interface.GetWeakPtr();
     }
 
     return nullptr;

@@ -44,8 +44,8 @@ void DeckController::CreateNumberCardInAllColors(const int number)
 
 void DeckController::CreateNumberCardOfColor(const int number, EColor color)
 {
-    EntityPtr<NumberCard> card01 = EntityPtr<NumberCard>::MakeEntityPtr(color, number);
-    EntityPtr<NumberCard> card02 = EntityPtr<NumberCard>::MakeEntityPtr(color, number);
+    EntityPtr<NumberCard> card01 = Engine::CreateEntity<NumberCard>(color, number);
+    EntityPtr<NumberCard> card02 = Engine::CreateEntity<NumberCard>(color, number);
     EmplaceCreatedCard(static_cast<EntityPtr<Card>>(card01));
     EmplaceCreatedCard(static_cast<EntityPtr<Card>>(card02));
 }
@@ -54,9 +54,9 @@ void DeckController::CreateSpecialCardsByColor(EColor color)
 {
     for (int i=0; i < 2; i++)
     {
-        EntityPtr<MustBuyCard> plusTwoCard = EntityPtr<MustBuyCard>::MakeEntityPtr(color, 2);
-        EntityPtr<JumpCard> jumpCard = EntityPtr<JumpCard>::MakeEntityPtr(color);
-        EntityPtr<ReverseCard> reverseCard = EntityPtr<ReverseCard>::MakeEntityPtr(color);
+        EntityPtr<MustBuyCard> plusTwoCard = Engine::CreateEntity<MustBuyCard>(color, 2);
+        EntityPtr<JumpCard> jumpCard = Engine::CreateEntity<JumpCard>(color);
+        EntityPtr<ReverseCard> reverseCard = Engine::CreateEntity<ReverseCard>(color);
 
         EmplaceCreatedCard(static_cast<EntityPtr<Card>>(plusTwoCard));
         EmplaceCreatedCard(static_cast<EntityPtr<Card>>(jumpCard));
@@ -68,7 +68,7 @@ void DeckController::CreateExtraCards()
 {
     for (int i=0; i < 4; i++)
     {
-        const EntityPtr<Card> switchHandCard = static_cast<EntityPtr<Card>>(EntityPtr<SwitchHandCard>::MakeEntityPtr());
+        const EntityPtr<Card> switchHandCard = static_cast<EntityPtr<Card>>(Engine::CreateEntity<SwitchHandCard>());
         EmplaceCreatedCard(switchHandCard);
     }
 }

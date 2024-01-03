@@ -13,7 +13,7 @@ void Round::RunRound(EntityPtr<Player> currentPlayer, EntityPtr<DeckController>&
 {
     DrawTurn(currentPlayer, deckController, turnFlow);
 
-    currentPlayer->PlayTurn(deckController.get());
+    currentPlayer->PlayTurn(deckController.GetWeakPtr());
 }
 
 void Round::DrawTurn(EntityPtr<Player> player, EntityPtr<DeckController> deckController, const ETurnFlow& turnFlow) const
