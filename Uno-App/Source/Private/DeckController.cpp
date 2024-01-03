@@ -12,14 +12,14 @@
 DeckController::DeckController(const std::string& name)
     : Entity{name}
 {
-    AllCards.reserve(104);
-    DeckCards.reserve(104);
+    AllCards.reserve(CARDS_AMOUNT_CAPACITY);
+    DeckCards.reserve(CARDS_AMOUNT_CAPACITY);
     CreateCards();
 }
 
 void DeckController::CreateCards()
 {
-    for (int i=0; i < 10; i++)
+    for (int i=0; i < NUMBER_CARDS_AMOUNT; i++)
     {
         CreateNumberCardInAllColors(i);
     }
@@ -44,15 +44,15 @@ void DeckController::CreateNumberCardInAllColors(const int number)
 
 void DeckController::CreateNumberCardOfColor(const int number, EColor color)
 {
-    EntityPtr<NumberCard> card01 = Engine::CreateEntity<NumberCard>(color, number);
-    EntityPtr<NumberCard> card02 = Engine::CreateEntity<NumberCard>(color, number);
+    const EntityPtr<NumberCard> card01 = Engine::CreateEntity<NumberCard>(color, number);
+    const EntityPtr<NumberCard> card02 = Engine::CreateEntity<NumberCard>(color, number);
     EmplaceCreatedCard(static_cast<EntityPtr<Card>>(card01));
     EmplaceCreatedCard(static_cast<EntityPtr<Card>>(card02));
 }
 
 void DeckController::CreateSpecialCardsByColor(EColor color)
 {
-    for (int i=0; i < 2; i++)
+    for (int i=0; i < SPECIAL_CARDS_BY_COLOR_AMOUNT; i++)
     {
         EntityPtr<MustBuyCard> plusTwoCard = Engine::CreateEntity<MustBuyCard>(color, 2);
         EntityPtr<JumpCard> jumpCard = Engine::CreateEntity<JumpCard>(color);
@@ -66,27 +66,27 @@ void DeckController::CreateSpecialCardsByColor(EColor color)
 
 void DeckController::CreateExtraCards()
 {
-    for (int i=0; i < 4; i++)
+    for (int i=0; i < EXTRA_CARD_AMOUNT; i++)
     {
         const EntityPtr<Card> switchHandCard = static_cast<EntityPtr<Card>>(Engine::CreateEntity<SwitchHandCard>());
         EmplaceCreatedCard(switchHandCard);
     }
 }
 
-void DeckController::EmplaceCreatedCard(EntityPtr<Card> card)
+void DeckController::EmplaceCreatedCard(const EntityPtr<Card>& card)
 {    
     AllCards.emplace_back(card);
     AddCardToDeck(card);
 }
 
-EntityPtr<Card> DeckController::PopFromStack()
+const EntityPtr<Card>& DeckController::PopFromStack()
 {
     if(TossedCards.empty())
     {
-        return {};
+        return EmptyCard;
     }
 
-    auto topCard = TossedCards.top();
+    const EntityPtr<Card>& topCard = TossedCards.top();
     TossedCards.pop();
     return topCard;
 }
@@ -97,7 +97,7 @@ void DeckController::ShuffleDeckCards()
     std::ranges::shuffle(DeckCards, std::default_random_engine(seed));
 }
 
-void DeckController::AddCardToDeck(EntityPtr<Card>& card)
+void DeckController::AddCardToDeck(const EntityPtr<Card>& card)
 {
     DeckCards.emplace_back(card);
 }
@@ -122,24 +122,24 @@ void DeckController::AddCardToTable(const EntityPtr<Card>& card)
     TossedCards.emplace(card);
 }
 
-EntityPtr<Card> DeckController::BuyCardFromDeck()
+const EntityPtr<Card>& DeckController::BuyCardFromDeck()
 {
     if(DeckCards.empty())
     {
-        const EntityPtr<Card> lastTossedCard = PopFromStack();
+        const EntityPtr<Card>& lastTossedCard = PopFromStack();
         ShuffleTossedCardsBackToDeck();
         AddCardToTable(lastTossedCard);
     }
 
-    auto topCard = DeckCards.back();
+    const EntityPtr<Card>& topCard = DeckCards.back();
     DeckCards.pop_back();
 
     return topCard;
 }
 
-EntityPtr<Card> DeckController::GetLastTossedCard()
+const EntityPtr<Card>& DeckController::GetLastTossedCard() const
 {
-    return TossedCards.empty() ? EntityPtr<Card>() : TossedCards.top();
+    return TossedCards.empty() ? EmptyCard : TossedCards.top();
 }
 
 int DeckController::GetAmountOfDeckCards() const
