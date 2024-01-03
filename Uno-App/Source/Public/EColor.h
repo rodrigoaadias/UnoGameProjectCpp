@@ -11,7 +11,7 @@ enum class EColor : uint8_t
     None
 };
 
-static std::string GetColorName(const EColor& color)
+static std::string GetColorName(const EColor color)
 {
     switch (color)
     {

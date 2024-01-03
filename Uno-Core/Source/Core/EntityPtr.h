@@ -55,12 +55,6 @@ public:
         return *this;
     }
 
-    // template <typename ...TArgs>
-    // static EntityPtr MakeEntityPtr(TArgs&& ...args)
-    // {
-    //     return EntityPtr(new std::shared_ptr<TElement>( new TElement(args...) ));
-    // }
-
     std::shared_ptr<TElement> operator -> ()
     {
         assert(IsValid());

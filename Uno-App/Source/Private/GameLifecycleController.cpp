@@ -65,5 +65,4 @@ void GameLifecycleController::ShowRestartOptions()
         Engine::Destroy(CurrentMatch);
         break;
     }
-
 }

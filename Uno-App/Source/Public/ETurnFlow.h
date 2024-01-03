@@ -8,7 +8,7 @@ enum class ETurnFlow : uint8_t
     AntiClockwise
 };
 
-inline std::string GetFlowName(const ETurnFlow& flow)
+inline std::string GetFlowName(const ETurnFlow flow)
 {
     switch (flow)
     {
