@@ -2,7 +2,7 @@
 #include "Public/Player.h"
 #include "Core/Core.h"
 
-JumpRound::JumpRound(int index)
+JumpRound::JumpRound(const int index)
     :Round{index}
 {}
 

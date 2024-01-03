@@ -26,7 +26,7 @@ void MustBuyRound::BuyCumulatedCards(const EntityPtr<Player>& currentPlayer, con
 void MustBuyRound::RunRound(const EntityPtr<Player>& currentPlayer, const EntityPtr<DeckController>& deckController, ETurnFlow turnFlow)
 {
     DrawTurn(currentPlayer, deckController, turnFlow);
-    EntityPtr<Card> cardOnTable = deckController->GetLastTossedCard();
+    const EntityPtr<Card>& cardOnTable = deckController->GetLastTossedCard();
     if(currentPlayer->CanTossCard(cardOnTable))
     {
         currentPlayer->PlayTurn(deckController.GetWeakPtr());
@@ -38,8 +38,7 @@ void MustBuyRound::RunRound(const EntityPtr<Player>& currentPlayer, const Entity
         BuyCumulatedCards(currentPlayer, deckController);
     }
 
-    
-    EntityPtr<MustBuyCard> lastCard = static_cast<EntityPtr<MustBuyCard>>(cardOnTable);
+    const EntityPtr<MustBuyCard> lastCard = static_cast<EntityPtr<MustBuyCard>>(cardOnTable);
     if(lastCard.IsValid())
     {
         lastCard->ClearRound();
