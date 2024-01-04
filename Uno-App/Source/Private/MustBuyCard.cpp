@@ -3,7 +3,7 @@
 #include "Core/Public/Engine.h"
 #include "Public/MustBuyRound.h"
 
-MustBuyCard::MustBuyCard(const EColor& color, int amountToBuy)
+MustBuyCard::MustBuyCard(const EColor color, const int amountToBuy)
     : Card{"Buy +" + std::to_string(amountToBuy), color}, AmountToBuy{amountToBuy}
 {}
 
@@ -38,12 +38,12 @@ EntityPtr<Round> MustBuyCard::GenerateCustomRound(int roundIndex)
     return static_cast<EntityPtr<Round>>(Engine::CreateEntity<MustBuyRound>(roundIndex, AmountToBuy + Cumulated));
 }
 
+void MustBuyCard::Cumulate(const int amount)
+{
+    Cumulated = amount;
+}
+
 void MustBuyCard::ClearRound()
 {
     IsInRound = false;
-}
-
-void MustBuyCard::Cumulate(int amount)
-{
-    Cumulated = amount;
 }
