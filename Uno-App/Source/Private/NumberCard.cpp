@@ -13,7 +13,7 @@ bool NumberCard::CanTossCardOnMe(const EntityPtr<Card>& other) const
 {
     if(other.IsValid())
     {
-        auto otherNumberCard = static_cast<EntityPtr<NumberCard>>(other);
+        EntityPtr<NumberCard> otherNumberCard = static_cast<EntityPtr<NumberCard>>(other);
         if(otherNumberCard.IsValid() &&
             otherNumberCard->GetNumber() == Number)
         {

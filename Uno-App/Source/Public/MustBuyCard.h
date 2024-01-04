@@ -10,7 +10,7 @@ class MustBuyCard : public Card, public ICustomRoundCard
 
 public:
     MustBuyCard(EColor color, int amountToBuy);
-    
+
     [[nodiscard]] int GetAmountToBuy() const;
     [[nodiscard]] std::string GetCardTypeName() const override;
     [[nodiscard]] bool CanTossCardOnMe(const EntityPtr<Card>& other) const override;
