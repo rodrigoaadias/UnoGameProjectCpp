@@ -77,10 +77,43 @@ EntityPtr also knows when the Entity is out of scope and automatically deletes i
 
 With this in mind, you can safely uses `EntityPtr` across your code and be sure that it will be destroyed at least at the end of the game execution.
 
-# Uno Architecture
+## Uno Architecture
 In this project, all classes are derived from `Entity` and they have the lifecycle handled by the Core library.
+For more information about the project architecture, please check the UML diagram images files inside `Documentation` directory.
 
-Some guides for the classes used in this project:
+### GamelifycycleController
+This is the controller responsible for creating a match and handle restart match options
+
+### Match
+Creates and manage all classes and objects used in a match, like players, cards and turns.
+
+### Round
+This is the class that handle how a round must be played. We have some derived rounds, like `JumpRound` that forces player skip its turn.
+
+### DeckController
+It creates all cards that will be used in the game. It manage the deck cards, the discard pile and also shuffle cards when needed.
+
+### Player
+This class represents a player in the game. It store the cards player has in hand, how to play a turn, the yell conditions, and the play options.
+
+### Card
+It's the base class that represents a card in the game. All cards in this game must be derived from `Card`. It also have some static functions to help draw the card in the Console.
+
+## How-to
+### Create a new Card type
+If you want to add a new card type to this project, with a specific behavior, you need to do the following steps:
+* Make the class derive from `Card`.
+* Implement the pure virtual methods.
+* If you have any specific rule to check if a card can be tossed on it, you can override the method `CanTossCardOnMe(const EntityPtr<Card>& other)`
+* If your card is a special card that change some behavior in the normal round flow, you have two options to implement it, based on what the card will do.
+    * **If the card must change a post round behaviour:** make this card also extends from interface `IPostRoundAction` and then implement what kind of action it must do. Examples of this usage: Switch Hand and Reverse cards. Both cards apply an action that must be done immediately after the player toss the card.
+    * **If the card must change the round:** make this card also extends from interface `ICustomRoundCard` and then return which round should be run for that turn. Examples of this usage: Jump and +2 cards. These both cards change the behavior of the next round, or in other words, how the round will be executed. Both rounds is not a normal round that a player can select a card to toss.
+    * You can implement both interfaces if needed.
+* In `DeckController`, add the logic to create the amount of the new cards that should be added in the deck inside the method `CreateCards()`
+* That's it, your card is ready to be used in the game.
+
+### Create a custom Round
+In some cases, a card can change how the next round will behave. This is very common in a Uno game. Situations that need it is when a player toss a Jump card for example. The next player must skip its turn.
 
 ## License
 - GNU GENERAL PUBLIC LICENSE for this repository (see `LICENSE.txt` for more details)
