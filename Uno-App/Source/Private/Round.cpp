@@ -1,26 +1,28 @@
 #include "Public/Round.h"
 #include "Public/DeckController.h"
 #include "Public/Card.h"
-#include "Public/ETurnFlow.h"
 #include "Public/Player.h"
 #include "Core/Core.h"
+#include <sstream>
 
 Round::Round(const int index)
     :Entity{"Round " + std::to_string(index)}, RoundIndex{index}
 {}
 
-void Round::RunRound(const EntityPtr<Player>& currentPlayer, const EntityPtr<DeckController>& deckController, const ETurnFlow turnFlow)
+void Round::RunRound(const EntityPtr<Player>& currentPlayer, const EntityPtr<DeckController>& deckController, const std::string_view turnFlowName)
 {
-    DrawTurn(currentPlayer, deckController, turnFlow);
+    DrawTurn(currentPlayer, deckController, turnFlowName);
 
     currentPlayer->PlayTurn(deckController.GetWeakPtr());
 }
 
-void Round::DrawTurn(const EntityPtr<Player>& player, const EntityPtr<DeckController>& deckController, const ETurnFlow& turnFlow) const
+void Round::DrawTurn(const EntityPtr<Player>& player, const EntityPtr<DeckController>& deckController, const std::string_view turnFlowName) const
 {
     Core::ClearConsole();
     Core::LogMessage("ROUND " + std::to_string(RoundIndex) + ": " + player->GetDisplayName() + "'s turn!");
-    Core::LogMessage("Flow: " + GetFlowName(turnFlow));
+    std::stringstream flowStream;
+    flowStream << "Flow: " << turnFlowName;
+    Core::LogMessage(flowStream.str());
     Core::LogMessage("Cards on Deck: " + std::to_string(deckController->GetAmountOfDeckCards()));
 
     const EntityPtr<Card>& tableCard = deckController->GetLastTossedCard();

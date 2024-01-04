@@ -11,7 +11,7 @@ std::string SwitchHandCard::GetCardTypeName() const
     return "Hand";
 }
 
-void SwitchHandCard::Execute(Match* currentMatch)
+void SwitchHandCard::Execute(IMatchContext* currentMatch)
 {
     Core::LogMessage(currentMatch->GetCurrentPlayer()->GetName()+" will SWITCH HANDS!");
     Core::LogMessage(currentMatch->GetCurrentPlayer()->GetName()+ " - Select the player that you want to switch hands: ");

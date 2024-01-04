@@ -20,6 +20,7 @@ package Core
     }
 
     Engine --> Entity
+    Engine --> EntityPtr
 
     class EntityPtr{
         std::shared_ptr<Entity>* Instance;
@@ -35,7 +36,6 @@ package Core
     }
 
     Core --> Engine
-    EntityPtr -> Entity
 }
 
 package UnoApp
@@ -71,9 +71,17 @@ package UnoApp
         std::weak_ptr<Card> GetTopCard();
     }
 
-    enum TurnFlow{
+    enum ETurnFlow{
         CLOCKWISE
         ANTI-CLOCKWISE
+    }
+    
+    enum EColor{
+        Blue,
+        Yellow,
+        Red,
+        Green,
+        None
     }
 
     class Match{    
@@ -103,6 +111,12 @@ package UnoApp
     class Card{
     }
 
+    interface IPostRoundAction{}
+    
+    interface ICustomRoundCard{}
+    
+    interface IMatchContext{}
+
     Entity <|-- GameLifecycleController
     GameLifecycleController --> Match
 
@@ -113,12 +127,22 @@ package UnoApp
     Player -> DeckController
     Match ---> Player
     Match ---> DeckController
-    Match -> TurnFlow
+    Match -> ETurnFlow
     Match --> Card
     Match --> Round
+    Match --> IPostRoundAction
+    IMatchContext <|-Match
+    IMatchContext <-- IPostRoundAction
+    ICustomRoundCard --> Round
+    Match --> ICustomRoundCard
     Round --> Player
     Round --> DeckController
     Round -> Card
+    Card -> EColor
+    Card <- DeckController
+    EColor <- DeckController
+    EColor <- Match
+    Card <- Player
 }
 
 @enduml
