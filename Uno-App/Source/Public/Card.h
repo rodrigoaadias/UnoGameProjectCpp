@@ -9,7 +9,6 @@ class Card : public Entity
     EColor Color;
 
     static std::string GetDisplayTypename(const Card& card);
-    static std::string GetConsoleColorCode(EColor color);
     static void DrawCardsFromTo(const std::vector<EntityPtr<Card>>& cards, bool drawOption, int from, int to);
     static void AddToLineIndex(std::vector<std::string>& lines, const std::string& text, int i);
 

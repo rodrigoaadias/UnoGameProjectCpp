@@ -4,7 +4,7 @@
 class MustBuyRound : public Round
 {
     int AmountToBuy{0};
-    void BuyCumulatedCards(const EntityPtr<Player>& currentPlayer, const EntityPtr<DeckController>& deckController);
+    void BuyCumulatedCards(const EntityPtr<Player>& currentPlayer, const EntityPtr<DeckController>& deckController) const;
 public:
     MustBuyRound(int index, int amountToBuy);
 

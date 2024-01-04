@@ -36,25 +36,6 @@ std::string Card::GetDisplayTypename(const Card& card)
     return typeName;
 }
 
-std::string Card::GetConsoleColorCode(const EColor color)
-{
-    switch (color)
-    {
-    case EColor::Blue:
-        return "\033[34m";
-    case EColor::Yellow:
-        return "\033[33m";
-    case EColor::Red:
-        return "\033[31m";
-    case EColor::Green:
-        return "\033[32m";
-    case EColor::None:
-        return DEFAULT_COLOR;
-    }
-
-    return DEFAULT_COLOR;
-}
-
 bool Card::CanTossCardOnMe(const EntityPtr<Card>& other) const
 {
     return !other.IsValid() || Color == other->GetColor() || other->GetColor() == EColor::None || Color == EColor::None;

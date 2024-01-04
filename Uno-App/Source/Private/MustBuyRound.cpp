@@ -8,7 +8,7 @@ MustBuyRound::MustBuyRound(const int index, const int amountToBuy)
     :Round{index}, AmountToBuy{amountToBuy}
 {}
 
-void MustBuyRound::BuyCumulatedCards(const EntityPtr<Player>& currentPlayer, const EntityPtr<DeckController>& deckController)
+void MustBuyRound::BuyCumulatedCards(const EntityPtr<Player>& currentPlayer, const EntityPtr<DeckController>& deckController) const
 {
     Core::WaitAnyKey(currentPlayer->GetName() + ": you must buy " + std::to_string(AmountToBuy) + " cards.");
     std::vector<EntityPtr<Card>> cardsToDraw;
