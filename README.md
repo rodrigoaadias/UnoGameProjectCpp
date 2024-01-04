@@ -48,9 +48,39 @@ Acceptable comments are:
   * Do not use extensively. If the method is self-explanatory, there’s no need for a summary
 * Brief explanation of complex algorithms that are very hard to understand
 
-## Architecture
-The Uno-Core library must be used as a tool to help developers to allocate and deallocate new objects in the Heap. If any object must be allocated in the Heap, make this class always derive from `Core::Entity`.
-For more information about the project architecture, please check the images files inside `Documentation` directory.
+# Project Architecture
+
+## Uno-Core
+The Uno-Core library must be used as a tool to help developers to create entities that must have a lifecycle and routines like `Begin()` and `Tick()`.
+
+### Entity
+Entity is anything in the game that should be instantiated and receive `Begin` and `Tick` calls.
+
+If your class is an entity that has a Lifetime cycle and can be destroyed anytime in the game, make this class always derive from `Core::Entity`.
+
+### Create entity object
+Use the static call `Engine::CreateEntity<TEntityType>()` to create a new object of that class.
+
+Using `Engine::CreateEntity<TEntityType>` will register the entity to receive `Begin()` and `Tick()` calls and it will return a handle class called `EntityPtr<TEntityType>`.
+
+### EntityPtr
+The `EntityPtr` is a core functionality of this project. This handle makes all memory allocations easier. It manipulates the object created in a shared pointer, that can be destroyed any time in your code. It also has a `IsValid()` method to check if the object is still alive.
+
+The `EntityPtr` can be copied along the code many times, and when you destroy the `Entity` that the `EntityPtr` handles, all `EntityPtr` objects will know that the `Entity` is destroyed. It is helpful to handle with situations that an object doesn't exist anymore.
+
+If a null ref of your entity is expected to happen in some situation, a good approach is to use `IsValid()` check to ensure that your Entity is still alive and don't get an undesired null pointer exception.
+
+### Destroy entities
+Use the static method `Engine::Destroy(EntityPtr<Entity>& entityToRemove)` to destroy an entity. It will erase your entity from memory.
+
+EntityPtr also knows when the Entity is out of scope and automatically deletes it from memory. It has the same functionality as `shared_ptr` that deletes an object from memory when out of scope.
+
+With this in mind, you can safely uses `EntityPtr` across your code and be sure that it will be destroyed at least at the end of the game execution.
+
+# Uno Architecture
+In this project, all classes are derived from `Entity` and they have the lifecycle handled by the Core library.
+
+Some guides for the classes used in this project:
 
 ## License
 - GNU GENERAL PUBLIC LICENSE for this repository (see `LICENSE.txt` for more details)
