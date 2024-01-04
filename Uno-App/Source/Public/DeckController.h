@@ -10,7 +10,7 @@ class Card;
 class DeckController : public Entity
 {
     inline static constexpr int CARDS_AMOUNT_CAPACITY = 104;
-    inline static constexpr int NUMBER_CARDS_AMOUNT = 10;
+    inline static constexpr int NUMBER_CARDS_LIMIT = 10;
     inline static constexpr int SPECIAL_CARDS_BY_COLOR_AMOUNT = 2;
     inline static constexpr int EXTRA_CARD_AMOUNT = 4;
     EntityPtr<Card> EmptyCard{};

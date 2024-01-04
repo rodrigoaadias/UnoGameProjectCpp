@@ -19,7 +19,7 @@ DeckController::DeckController(const std::string& name)
 
 void DeckController::CreateCards()
 {
-    for (int i=0; i < NUMBER_CARDS_AMOUNT; i++)
+    for (int i=0; i < NUMBER_CARDS_LIMIT; i++)
     {
         CreateNumberCardInAllColors(i);
     }
