@@ -64,7 +64,7 @@ Use the static call `Engine::CreateEntity<TEntityType>()` to create a new object
 Using `Engine::CreateEntity<TEntityType>` will register the entity to receive `Begin()` and `Tick()` calls and it will return a handle class called `EntityPtr<TEntityType>`.
 
 ### EntityPtr
-The `EntityPtr` is a core functionality of this project and it's mandatory to be used with Entities in the game. This handle makes all memory allocations easier. It manipulates the object created in a shared pointer, that can be destroyed any time in your code. It also has a `IsValid()` method to check if the object is still alive.
+The `EntityPtr` is a core functionality of this project and it's mandatory to be used with Entities in the game. This is a handler that makes all memory allocations easier. It manipulates the object created in a shared pointer, that can be destroyed any time in your code. It also has a `IsValid()` method to check if the object is still alive.
 
 The `EntityPtr` can be copied along the code many times, and when you destroy the `Entity` that the `EntityPtr` handles, all `EntityPtr` objects will know that the `Entity` is destroyed. It is helpful to handle with situations that an object doesn't exist anymore.
 
@@ -75,7 +75,7 @@ Use the static method `Engine::Destroy(EntityPtr<Entity>& entityToRemove)` to de
 
 EntityPtr also knows when the Entity is out of scope and automatically deletes it from memory. It has the same functionality as `shared_ptr` that deletes an object from memory when out of scope.
 
-With this in mind, you can safely uses `EntityPtr` across your code and be sure that it will be destroyed at least at the end of the game execution.
+With this in mind, you can safely use `EntityPtr` across your code and be sure that it will be destroyed at least at the end of the game execution.
 
 ## Uno Architecture
 In this project, all classes are derived from `Entity` and they have the lifecycle handled by the Core library.
@@ -88,10 +88,10 @@ This is the controller responsible for creating a match and handle restart match
 Creates and manage all classes and objects used in a match, like players, cards and turns.
 
 ### Round
-This is the class that handle how a round must be played. We have some derived rounds, like `JumpRound` that forces player skip its turn.
+This is the class that handles how a round must be played. We have some derived rounds, like `JumpRound` that forces player skip its turn.
 
 ### DeckController
-It creates all cards that will be used in the game. It manage the deck cards, the discard pile and also shuffle cards when needed.
+It creates all cards that will be used in the game. It manages the deck cards, the discard pile and also shuffle cards when needed.
 
 ### Player
 This class represents a player in the game. It store the cards player has in hand, how to play a turn, the yell conditions, and the play options.
@@ -106,7 +106,7 @@ If you want to add a new card type to this project, with a specific behavior, yo
 * Implement the pure virtual methods.
 * If you have any specific rule to check if a card can be tossed on it, you can override the method `CanTossCardOnMe(const EntityPtr<Card>& other)`
 * If your card is a special card that change some behavior in the normal round flow, you have two options to implement it, based on what the card will do.
-    * **If the card must change a post round behaviour:** make this card also extends from interface `IPostRoundAction` and then implement what kind of action it must do. Examples of this usage: Switch Hand and Reverse cards. Both cards apply an action that must be done immediately after the player toss the card.
+    * **If the card must change a post round behaviour:** make this card also extends from interface `IPostRoundAction` and then implement what kind of action it must do. Examples of this usage: Switch Hand and Reverse cards. Both cards apply an action that must be done immediately after the player toss the card and before the next round.
     * **If the card must change the round:** make this card also extends from interface `ICustomRoundCard` and then return which round should be run for that turn. Examples of this usage: Jump and +2 cards. These both cards change the behavior of the next round, or in other words, how the round will be executed. Both rounds is not a normal round that a player can select a card to toss.
     * You can implement both interfaces if needed.
 * In `DeckController`, add the logic to create the amount of the new cards that should be added in the deck inside the method `CreateCards()`
