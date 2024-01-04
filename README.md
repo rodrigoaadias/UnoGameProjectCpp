@@ -64,7 +64,7 @@ Use the static call `Engine::CreateEntity<TEntityType>()` to create a new object
 Using `Engine::CreateEntity<TEntityType>` will register the entity to receive `Begin()` and `Tick()` calls and it will return a handle class called `EntityPtr<TEntityType>`.
 
 ### EntityPtr
-The `EntityPtr` is a core functionality of this project. This handle makes all memory allocations easier. It manipulates the object created in a shared pointer, that can be destroyed any time in your code. It also has a `IsValid()` method to check if the object is still alive.
+The `EntityPtr` is a core functionality of this project and it's mandatory to be used with Entities in the game. This handle makes all memory allocations easier. It manipulates the object created in a shared pointer, that can be destroyed any time in your code. It also has a `IsValid()` method to check if the object is still alive.
 
 The `EntityPtr` can be copied along the code many times, and when you destroy the `Entity` that the `EntityPtr` handles, all `EntityPtr` objects will know that the `Entity` is destroyed. It is helpful to handle with situations that an object doesn't exist anymore.
 
@@ -102,7 +102,7 @@ It's the base class that represents a card in the game. All cards in this game m
 ## How-to
 ### Create a new Card type
 If you want to add a new card type to this project, with a specific behavior, you need to do the following steps:
-* Make the class derive from `Card`.
+* Make your card class derive from `Card`.
 * Implement the pure virtual methods.
 * If you have any specific rule to check if a card can be tossed on it, you can override the method `CanTossCardOnMe(const EntityPtr<Card>& other)`
 * If your card is a special card that change some behavior in the normal round flow, you have two options to implement it, based on what the card will do.
@@ -113,7 +113,18 @@ If you want to add a new card type to this project, with a specific behavior, yo
 * That's it, your card is ready to be used in the game.
 
 ### Create a custom Round
-In some cases, a card can change how the next round will behave. This is very common in a Uno game. Situations that need it is when a player toss a Jump card for example. The next player must skip its turn.
+In some cases, a card can change how the next round will behave. This is very common in a Uno game. 
+
+An example of this is when a player toss a Jump card. The next player must skip its turn.
+
+To create a new round, do the following steps:
+* Make your round class derive from `Round`
+* Override the `RunRound` method and write here how the round should behave. Note that this method receives the current player turn and a reference to the deck. Use it to manipulate the round behaviour. You can look at `MustBuyRound` class to see how to a custom round behaviour can be implemented.
+
+### Check if an object implements an Interface
+As explained before, it's mandatory that your entity uses an EntityPtr. And another feature of EntityPtr is that it has a method to check if the Entity implements any interface.
+
+Use `ImplementsInterface<TInterfaceType>()` method to check if the Entity implements the interface you want. It returns a raw pointer to the interface. If it's `NULL`, it means that your Entity doesn't implements it.
 
 ## License
 - GNU GENERAL PUBLIC LICENSE for this repository (see `LICENSE.txt` for more details)

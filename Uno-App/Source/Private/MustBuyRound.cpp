@@ -23,7 +23,7 @@ void MustBuyRound::BuyCumulatedCards(const EntityPtr<Player>& currentPlayer, con
     Card::DrawCards(cardsToDraw);
 }
 
-void MustBuyRound::RunRound(const EntityPtr<Player>& currentPlayer, const EntityPtr<DeckController>& deckController, ETurnFlow turnFlow)
+void MustBuyRound::RunRound(const EntityPtr<Player>& currentPlayer, const EntityPtr<DeckController>& deckController, const ETurnFlow turnFlow)
 {
     DrawTurn(currentPlayer, deckController, turnFlow);
     const EntityPtr<Card>& cardOnTable = deckController->GetLastTossedCard();
