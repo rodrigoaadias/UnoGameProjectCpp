@@ -191,11 +191,11 @@ void Match::Restart()
 {
     for (const EntityPtr<Player>& player : JoinedPlayers)
     {
-        for (EntityPtr<Card>& playerCard : player->GetCards())
+        for (const EntityPtr<Card>& playerCard : player->GetCards())
         {
             Deck->AddCardToDeck(playerCard);
         }
-        player->GetCards().clear();
+        player->GetCardsWrite().clear();
     }
 
     Deck->ShuffleTossedCardsBackToDeck();

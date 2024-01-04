@@ -97,7 +97,7 @@ void DeckController::ShuffleDeckCards()
     std::ranges::shuffle(DeckCards, std::default_random_engine(seed));
 }
 
-void DeckController::AddCardToDeck(const EntityPtr<Card>& card)
+void DeckController::AddCardToDeck(EntityPtr<Card> card)
 {
     DeckCards.emplace_back(card);
 }
@@ -117,12 +117,12 @@ void DeckController::ShuffleTossedCardsBackToDeck()
     ShuffleDeckCards();
 }
 
-void DeckController::AddCardToTable(const EntityPtr<Card>& card)
+void DeckController::AddCardToTable(EntityPtr<Card> card)
 {
     TossedCards.emplace(card);
 }
 
-const EntityPtr<Card>& DeckController::BuyCardFromDeck()
+EntityPtr<Card> DeckController::BuyCardFromDeck()
 {
     if(DeckCards.empty())
     {
@@ -131,7 +131,7 @@ const EntityPtr<Card>& DeckController::BuyCardFromDeck()
         AddCardToTable(lastTossedCard);
     }
 
-    const EntityPtr<Card>& topCard = DeckCards.back();
+    EntityPtr<Card> topCard = DeckCards.back();
     DeckCards.pop_back();
 
     return topCard;

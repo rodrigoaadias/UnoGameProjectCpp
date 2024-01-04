@@ -3,30 +3,30 @@
 #include "Core/Core.h"
 #include "Public/DeckController.h"
 
-Player::Player(const std::string& name, const int& index)
-    :Entity(name), Index{index}
+Player::Player(const std::string& name, const int index)
+    :Entity(name), Index{index}, HasYelled{false}
 {
     CardsOnHand.reserve(10);
 }
 
-std::string Player::GetDisplayName()
+std::string Player::GetDisplayName() const
 {
     return "Player " + std::to_string(Index)  + " - " + GetName();
 }
 
-void Player::AddCardToHand(EntityPtr<Card> card)
+void Player::AddCardToHand(const EntityPtr<Card> card)
 {
     CardsOnHand.emplace_back(card);
 }
 
-bool Player::CanTossCard(const EntityPtr<Card>& lastTossedCard)
+bool Player::CanTossCard(const EntityPtr<Card>& lastTossedCard) const
 {
     if(!lastTossedCard.IsValid())
     {
         return true;
     }
 
-    for (const auto& card : GetCards())
+    for (const EntityPtr<Card>& card : CardsOnHand)
     {
         if(!card.IsValid())
         {
@@ -44,7 +44,7 @@ bool Player::CanTossCard(const EntityPtr<Card>& lastTossedCard)
 
 EntityPtr<Card> Player::PopCardFrom(const uint32_t index)
 {
-    EntityPtr<Card> returnCard = CardsOnHand[index];
+    EntityPtr<Card> returnCard = CardsOnHand.at(index);
     CardsOnHand.erase(CardsOnHand.begin() + index);
 
     return returnCard;
@@ -69,7 +69,7 @@ void Player::BuyDeckCard(const std::weak_ptr<DeckController>& deckController)
 
 void Player::TossValidCard(const std::weak_ptr<DeckController>& deckController, const uint32_t choice)
 {
-    const EntityPtr<Card> selectedCard = PopCardFrom(choice);
+    const EntityPtr<Card>& selectedCard = PopCardFrom(choice);
     deckController.lock()->AddCardToTable(selectedCard);
 
     Core::LogMessage(GetDisplayName() + " tossed the following card:");
@@ -81,7 +81,7 @@ void Player::BuyCardAndTryToss(const std::weak_ptr<DeckController>& deckControll
     Core::WaitAnyKey(GetDisplayName() + ": you must buy a card from deck! ");
     BuyDeckCard(deckController);
     Core::LogMessage(GetDisplayName() + " has bought the following card: ");
-    EntityPtr<Card> boughtCard = CardsOnHand.at(CardsOnHand.size() - 1);
+    const EntityPtr<Card>& boughtCard = CardsOnHand.at(static_cast<int>(CardsOnHand.size()) - 1);
 
     boughtCard->Draw();
 
@@ -89,7 +89,7 @@ void Player::BuyCardAndTryToss(const std::weak_ptr<DeckController>& deckControll
     {
         TryYell();
         Core::WaitAnyKey(GetDisplayName() + ": you can toss the card you bought!");
-        TossValidCard(deckController, CardsOnHand.size() - 1);
+        TossValidCard(deckController, static_cast<int>(CardsOnHand.size()) - 1);
     }
     else
     {
@@ -97,7 +97,7 @@ void Player::BuyCardAndTryToss(const std::weak_ptr<DeckController>& deckControll
     }
 }
 
-void Player::SelectCardToToss(const std::weak_ptr<DeckController>& deckController, EntityPtr<Card> tossedCard)
+void Player::SelectCardToToss(const std::weak_ptr<DeckController>& deckController, const EntityPtr<Card>& tossedCard)
 {
     const uint32_t choice = Core::GetInput<int>("Select the card you want to toss accordingly the Option Number showing over the card: ");
     while (choice < 0 || choice >= CardsOnHand.size())
@@ -131,7 +131,7 @@ void Player::TryYell()
 
 void Player::PlayTurn(const std::weak_ptr<DeckController>& deckController)
 {
-    EntityPtr<Card> tossedCard = deckController.lock()->GetLastTossedCard();
+    const EntityPtr<Card>& tossedCard = deckController.lock()->GetLastTossedCard();
     if(CanTossCard(tossedCard))
     {
         if(CardsOnHand.size() == 1 && !HasYelled)
@@ -141,8 +141,10 @@ void Player::PlayTurn(const std::weak_ptr<DeckController>& deckController)
             BuyDeckCard(deckController);
 
             Core::LogMessage(GetName() + " bought the following cards: ");
-            Card::DrawCards({CardsOnHand.at(CardsOnHand.size() - 1),
-                                CardsOnHand.at(CardsOnHand.size() - 2)});
+            const std::vector cardsToDraw = {CardsOnHand.at(CardsOnHand.size() - 1),
+                                CardsOnHand.at(CardsOnHand.size() - 2)};
+
+            Card::DrawCards(cardsToDraw);
             return;
         }
 
@@ -161,23 +163,23 @@ void Player::SwitchHandsWith(EntityPtr<Player>& other)
     const std::vector<EntityPtr<Card>> cachedCards = CardsOnHand;
     CardsOnHand.clear();
 
-    for (const auto& otherCard : other->GetCards())
+    for (const EntityPtr<Card>& otherCard : other->GetCards())
     {
         CardsOnHand.emplace_back(otherCard);
     }
 
-    other->GetCards().clear();
+    other->GetCardsWrite().clear();
 
-    for (const auto& cacheCard : cachedCards)
+    for (const EntityPtr<Card>& cacheCard : cachedCards)
     {
         other->AddCardToHand(cacheCard);
     }
 }
 
-std::string Player::ToString()
+std::string Player::ToString() const
 {
     std::string cardsToString =  std::to_string(CardsOnHand.size()) + " Cards on hand\n";
-    for (auto card : CardsOnHand)
+    for (const EntityPtr<Card>& card : CardsOnHand)
     {
         if(card.IsValid())
         {
@@ -188,7 +190,12 @@ std::string Player::ToString()
     return GetDisplayName() + ": " + cardsToString;
 }
 
-std::vector<EntityPtr<Card>>& Player::GetCards()
+const std::vector<EntityPtr<Card>>& Player::GetCards() const
 {
+    return CardsOnHand;
+}
+
+std::vector<EntityPtr<Card>>& Player::GetCardsWrite()
+{    
     return CardsOnHand;
 }

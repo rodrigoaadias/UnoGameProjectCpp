@@ -30,11 +30,11 @@ public:
     DeckController(const std::string& name);
 
     void ShuffleDeckCards();
-    void AddCardToDeck(const EntityPtr<Card>& card);
+    void AddCardToDeck(EntityPtr<Card> card);
     [[nodiscard]] bool IsDeckEmpty() const;
     void ShuffleTossedCardsBackToDeck();
-    void AddCardToTable(const EntityPtr<Card>& card);
-    const EntityPtr<Card>& BuyCardFromDeck();
+    void AddCardToTable(EntityPtr<Card> card);
+    EntityPtr<Card> BuyCardFromDeck();
 
     [[nodiscard]] const EntityPtr<Card>& GetLastTossedCard() const;
     [[nodiscard]] int GetAmountOfDeckCards() const;
