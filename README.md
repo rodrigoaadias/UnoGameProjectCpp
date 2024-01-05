@@ -81,7 +81,7 @@ With this in mind, you can safely use `EntityPtr` across your code and be sure t
 In this project, all classes are derived from `Entity` and they have the lifecycle handled by the Core library.
 For more information about the project architecture, please check the UML diagram images files inside `Documentation` directory.
 
-### GamelifycycleController
+### GamelifecycleController
 This is the controller responsible for creating a match and handle restart match options
 
 ### Match
