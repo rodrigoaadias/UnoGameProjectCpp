@@ -16,15 +16,30 @@ package UnoApp{
     }
 
     abstract class Card{
-        EColor color;
+        -EColor color;
+        -static std::string GetDisplayTypename(const Card& card);
+        -static void DrawCardsFromTo(const std::vector<EntityPtr<Card>>& cards, bool drawOption, int from, int to);
+        -static void AddToLineIndex(std::vector<std::string>& lines, const std::string& text, int i);
+        +EColor GetColor() const;    
+        +virtual std::string GetCardTypeName() const;
+        +virtual bool CanTossCardOnMe(const EntityPtr<Card>& other) const;
+        +static std::vector<std::string> GetDisplayCard(const Card& card);
+        +static void DrawCards(const std::vector<EntityPtr<Card>>& cards, bool drawOption);
+        +void Draw() const;
     }
 
     class NumberCard{
-        int number;
+        -int Number;
+        +int GetNumber() const;
     }
 
     class MustBuyCard{
-        int amountToBuy;
+        -int AmountToBuy;
+        -int Cumulated;
+        -bool IsInRound;
+        +int GetAmountToBuy() const;
+        +void Cumulate(int amount);
+        +void ClearRound();
     }
 
     class ReverseCard{

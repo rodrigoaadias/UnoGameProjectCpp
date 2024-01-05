@@ -21,7 +21,7 @@ class Player : public Entity
     void SelectCardToToss(const std::weak_ptr<DeckController>& deckController, const EntityPtr<Card>& tossedCard);
 
 protected:
-    void AddCardToHand(EntityPtr<Card> card);
+void AddCardToHand(EntityPtr<Card> card);
 
 public:
     Player(const std::string& name, int index);
