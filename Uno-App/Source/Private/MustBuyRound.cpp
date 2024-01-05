@@ -8,14 +8,14 @@ MustBuyRound::MustBuyRound(const int index, const int amountToBuy)
     :Round{index}, AmountToBuy{amountToBuy}
 {}
 
-void MustBuyRound::BuyCumulatedCards(EntityPtr<Player> currentPlayer, EntityPtr<DeckController>& deckController)
+void MustBuyRound::BuyCumulatedCards(const EntityPtr<Player>& currentPlayer, const EntityPtr<DeckController>& deckController) const
 {
     Core::WaitAnyKey(currentPlayer->GetName() + ": you must buy " + std::to_string(AmountToBuy) + " cards.");
     std::vector<EntityPtr<Card>> cardsToDraw;
     cardsToDraw.reserve(AmountToBuy);
     for (int i=0; i < AmountToBuy; i++)
     {
-        currentPlayer->BuyDeckCard(deckController.get());
+        currentPlayer->BuyDeckCard(deckController.GetWeakPtr());
         cardsToDraw.emplace_back(currentPlayer->GetCards().back());
     }
 
@@ -23,14 +23,13 @@ void MustBuyRound::BuyCumulatedCards(EntityPtr<Player> currentPlayer, EntityPtr<
     Card::DrawCards(cardsToDraw);
 }
 
-void MustBuyRound::RunRound(EntityPtr<Player> currentPlayer, EntityPtr<DeckController>& deckController,
-                            const ETurnFlow& turnFlow)
+void MustBuyRound::RunRound(const EntityPtr<Player>& currentPlayer, const EntityPtr<DeckController>& deckController, ETurnFlow turnFlow)
 {
     DrawTurn(currentPlayer, deckController, turnFlow);
-    EntityPtr<Card> cardOnTable = deckController->GetLastTossedCard();
+    const EntityPtr<Card>& cardOnTable = deckController->GetLastTossedCard();
     if(currentPlayer->CanTossCard(cardOnTable))
     {
-        currentPlayer->PlayTurn(deckController.get());
+        currentPlayer->PlayTurn(deckController.GetWeakPtr());
         EntityPtr<MustBuyCard> newMustBuy = static_cast<EntityPtr<MustBuyCard>>(deckController->GetLastTossedCard());
         newMustBuy->Cumulate(AmountToBuy);
     }
@@ -39,8 +38,7 @@ void MustBuyRound::RunRound(EntityPtr<Player> currentPlayer, EntityPtr<DeckContr
         BuyCumulatedCards(currentPlayer, deckController);
     }
 
-    
-    EntityPtr<MustBuyCard> lastCard = static_cast<EntityPtr<MustBuyCard>>(cardOnTable);
+    const EntityPtr<MustBuyCard> lastCard = static_cast<EntityPtr<MustBuyCard>>(cardOnTable);
     if(lastCard.IsValid())
     {
         lastCard->ClearRound();

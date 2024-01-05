@@ -1,6 +1,5 @@
 #pragma once
 #include <assert.h>
-#include <iostream>
 #include <memory>
 #include <ostream>
 
@@ -11,20 +10,49 @@ public:
     std::shared_ptr<TElement>* Instance {nullptr};
     std::shared_ptr<int> RefCount {};
 
-    EntityPtr(std::shared_ptr<TElement>* inInstance)
-        : Instance(inInstance), RefCount{std::make_shared<int>()}
+    explicit EntityPtr(std::shared_ptr<TElement>* inInstance)
+        : Instance(std::move(inInstance)), RefCount{std::make_shared<int>()}
     { }
 
     EntityPtr(std::shared_ptr<TElement>* inInstance, const std::shared_ptr<int>& inRefCount)
-        : Instance(inInstance), RefCount{inRefCount}
+        : Instance(std::move(inInstance)), RefCount{inRefCount}
     { }
 
     EntityPtr() = default;
 
-    template <typename ...TArgs>
-    static EntityPtr MakeEntityPtr(TArgs ...args)
+    EntityPtr(const EntityPtr& other)
     {
-        return EntityPtr(new std::shared_ptr<TElement>( new TElement(args...) ));
+        Instance = other.Instance;
+        RefCount = other.RefCount;
+    }
+
+    EntityPtr(EntityPtr&& other) noexcept
+    {
+        Instance = other.Instance;
+        RefCount = other.RefCount;
+        other.Instance = nullptr;
+        other.RefCount.reset();
+    }
+
+    EntityPtr& operator = (const EntityPtr& other)
+    {
+        if(this == &other)
+        {
+            return *this;
+        }
+
+        Instance = other.Instance;
+        RefCount = other.RefCount;
+        return *this;
+    }
+
+    EntityPtr& operator = (EntityPtr&& other) noexcept
+    {
+        Instance = other.Instance;
+        RefCount = other.RefCount;
+        other.Instance = nullptr;
+        other.RefCount.reset();
+        return *this;
     }
 
     std::shared_ptr<TElement> operator -> ()
@@ -32,7 +60,7 @@ public:
         assert(IsValid());
         return *Instance;
     }
-    
+
     std::shared_ptr<TElement> operator -> () const
     {
         assert(IsValid());
@@ -74,11 +102,17 @@ public:
         return Instance && *Instance != nullptr;
     }
 
-    std::weak_ptr<TElement> get()
+    std::weak_ptr<TElement> GetWeakPtr() const
     {        
         assert(IsValid());
         
         return std::weak_ptr<TElement>{ *Instance }; 
+    }
+
+    TElement& GetRef()
+    {
+        assert(IsValid());
+        return **Instance;
     }
 
     void reset()

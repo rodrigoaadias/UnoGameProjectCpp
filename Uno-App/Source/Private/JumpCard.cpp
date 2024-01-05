@@ -1,8 +1,8 @@
 #include "Public/JumpCard.h"
-
+#include "Core/Public/Engine.h"
 #include "Public/JumpRound.h"
 
-JumpCard::JumpCard(const EColor& color)
+JumpCard::JumpCard(const EColor color)
     :Card{"Jump Card", color}
 {}
 
@@ -11,12 +11,12 @@ std::string JumpCard::GetCardTypeName() const
     return "Jump";
 }
 
-EntityPtr<Round> JumpCard::GetCustomRound(const int roundIndex)
+EntityPtr<Round> JumpCard::GenerateCustomRound(const int roundIndex)
 {
-    return static_cast<EntityPtr<Round>>(EntityPtr<JumpRound>::MakeEntityPtr(roundIndex));
+    return static_cast<EntityPtr<Round>>(Engine::CreateEntity<JumpRound>(roundIndex));
 }
 
-bool JumpCard::CanTossCardOnMe(EntityPtr<Card> other)
+bool JumpCard::CanTossCardOnMe(const EntityPtr<Card>& other) const
 {
     if(other.IsValid())
     {

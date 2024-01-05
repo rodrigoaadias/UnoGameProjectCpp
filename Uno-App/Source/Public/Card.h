@@ -6,23 +6,20 @@
 
 class Card : public Entity
 {
-    static constexpr int COLOR_DISPLAY_SIZE = 7;
-    static constexpr int CARDS_PER_LINE = 7;
     EColor Color;
 
-    static std::string GetTypename(const Card& card);
-    static std::string GetConsoleColorCode(EColor color);
+    static std::string GetDisplayTypename(const Card& card);
     static void DrawCardsFromTo(const std::vector<EntityPtr<Card>>& cards, bool drawOption, int from, int to);
     static void AddToLineIndex(std::vector<std::string>& lines, const std::string& text, int i);
 
 public:
     Card(const std::string& name, EColor color);
-    EColor GetColor() const { return Color; }
+    [[nodiscard]] EColor GetColor() const;
 
-    virtual std::string GetCardTypeName() const = 0;
-    virtual bool CanTossCardOnMe(EntityPtr<Card> other);
+    [[nodiscard]] virtual std::string GetCardTypeName() const = 0;
+    [[nodiscard]] virtual bool CanTossCardOnMe(const EntityPtr<Card>& other) const;
 
-    static std::vector<std::string> GetDisplayCard(const Card& card);  
+    static std::vector<std::string> GetDisplayCard(const Card& card);
     static void DrawCards(const std::vector<EntityPtr<Card>>& cards, bool drawOption = false);
 
     void Draw() const;

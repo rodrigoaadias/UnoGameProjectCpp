@@ -17,7 +17,7 @@ void SwitchHandCard::Execute(Match* currentMatch)
     Core::LogMessage(currentMatch->GetCurrentPlayer()->GetName()+ " - Select the player that you want to switch hands: ");
 
     int optionNumber = -1;
-    for (const auto& player : currentMatch->GetPlayers())
+    for (const EntityPtr<Player>& player : currentMatch->GetPlayers())
     {
         optionNumber++;
         if(player != currentMatch->GetCurrentPlayer())

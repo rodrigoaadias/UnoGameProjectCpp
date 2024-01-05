@@ -5,8 +5,8 @@
 class ReverseCard : public Card, public IPostRoundAction
 {
 public:
-    ReverseCard(const EColor& color);
+    ReverseCard(EColor color);
     std::string GetCardTypeName() const override;
-    bool CanTossCardOnMe(EntityPtr<Card> other) override;
+    [[nodiscard]] bool CanTossCardOnMe(const EntityPtr<Card>& other) const override;
     void Execute(Match* currentMatch) override;
 };

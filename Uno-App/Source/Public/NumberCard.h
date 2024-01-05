@@ -8,7 +8,7 @@ class NumberCard : public Card
 public:
     NumberCard(EColor color, int number);
 
-    int GetNumber() const { return Number; }
-    std::string GetCardTypeName() const override;
-    bool CanTossCardOnMe(EntityPtr<Card> other) override;
+    [[nodiscard]] int GetNumber() const { return Number; }
+    [[nodiscard]] std::string GetCardTypeName() const override;
+    [[nodiscard]] bool CanTossCardOnMe(const EntityPtr<Card>& other) const override;
 };

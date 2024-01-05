@@ -5,10 +5,10 @@
 class JumpCard : public Card, public ICustomRoundCard
 {
 public:
-    JumpCard(const EColor& color);
-    std::string GetCardTypeName() const override;
-
-    EntityPtr<Round> GetCustomRound(int roundIndex) override;
+    JumpCard(EColor color);
     
-    bool CanTossCardOnMe(EntityPtr<Card> other) override;
+    EntityPtr<Round> GenerateCustomRound(int roundIndex) override;
+
+    [[nodiscard]] std::string GetCardTypeName() const override;
+    [[nodiscard]] bool CanTossCardOnMe(const EntityPtr<Card>& other) const override;
 };

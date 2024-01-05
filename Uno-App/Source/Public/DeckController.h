@@ -9,6 +9,12 @@ class Card;
 
 class DeckController : public Entity
 {
+    inline static constexpr int CARDS_AMOUNT_CAPACITY = 104;
+    inline static constexpr int NUMBER_CARDS_LIMIT = 10;
+    inline static constexpr int SPECIAL_CARDS_BY_COLOR_AMOUNT = 2;
+    inline static constexpr int EXTRA_CARD_AMOUNT = 4;
+    EntityPtr<Card> EmptyCard{};
+
     std::vector<EntityPtr<Card>> AllCards;
     std::vector<EntityPtr<Card>> DeckCards;
     std::stack<EntityPtr<Card>> TossedCards;
@@ -18,19 +24,19 @@ class DeckController : public Entity
     void CreateNumberCardOfColor(int number, EColor color);
     void CreateSpecialCardsByColor(EColor color);
     void CreateExtraCards();
-    void EmplaceCreatedCard(EntityPtr<Card> card);
-    EntityPtr<Card> PopFromStack();
+    void EmplaceCreatedCard(const EntityPtr<Card>& card);
+    const EntityPtr<Card>& PopFromStack();
 public:
     DeckController(const std::string& name);
 
     void ShuffleDeckCards();
-    void AddCardToDeck(EntityPtr<Card>& card);
-    bool IsDeckEmpty() const;
+    void AddCardToDeck(EntityPtr<Card> card);
+    [[nodiscard]] bool IsDeckEmpty() const;
     void ShuffleTossedCardsBackToDeck();
-    void AddCardToTable(const EntityPtr<Card>& card);
+    void AddCardToTable(EntityPtr<Card> card);
     EntityPtr<Card> BuyCardFromDeck();
-    EntityPtr<Card> GetLastTossedCard();
 
-    int GetAmountOfDeckCards() const;
-    int GetAmountOfTossedCards() const;
+    [[nodiscard]] const EntityPtr<Card>& GetLastTossedCard() const;
+    [[nodiscard]] int GetAmountOfDeckCards() const;
+    [[nodiscard]] int GetAmountOfTossedCards() const;
 };

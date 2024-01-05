@@ -30,7 +30,7 @@ void Engine::Tick()
         {
             Entities.erase(Entities.begin() + i);
             i--;
-            break;
+            continue;
         }
 
         const std::shared_ptr<Entity> sharedEntity = Entities[i].lock();

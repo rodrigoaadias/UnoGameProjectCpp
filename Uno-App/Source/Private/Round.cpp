@@ -5,29 +5,33 @@
 #include "Public/Player.h"
 #include "Core/Core.h"
 
-Round::Round(int index)
+Round::Round(const int index)
     :Entity{"Round " + std::to_string(index)}, RoundIndex{index}
 {}
 
-void Round::RunRound(EntityPtr<Player> currentPlayer, EntityPtr<DeckController>& deckController, const ETurnFlow& turnFlow)
+void Round::RunRound(const EntityPtr<Player>& currentPlayer, const EntityPtr<DeckController>& deckController, const ETurnFlow turnFlow)
 {
     DrawTurn(currentPlayer, deckController, turnFlow);
 
-    currentPlayer->PlayTurn(deckController.get());
+    currentPlayer->PlayTurn(deckController.GetWeakPtr());
 }
 
-void Round::DrawTurn(EntityPtr<Player> player, EntityPtr<DeckController> deckController, const ETurnFlow& turnFlow) const
+void Round::DrawTurn(const EntityPtr<Player>& player, const EntityPtr<DeckController>& deckController, const ETurnFlow& turnFlow) const
 {
     Core::ClearConsole();
     Core::LogMessage("ROUND " + std::to_string(RoundIndex) + ": " + player->GetDisplayName() + "'s turn!");
     Core::LogMessage("Flow: " + GetFlowName(turnFlow));
     Core::LogMessage("Cards on Deck: " + std::to_string(deckController->GetAmountOfDeckCards()));
 
-    const auto tableCard = deckController->GetLastTossedCard();
+    const EntityPtr<Card>& tableCard = deckController->GetLastTossedCard();
     if(tableCard.IsValid())
     {
         Core::LogMessage("Card on table:");
-        Card::DrawCards(std::vector {tableCard});
+
+        std::vector<EntityPtr<Card>> cards;
+        cards.emplace_back(tableCard);
+
+        Card::DrawCards(cards);
     }
     else
     {

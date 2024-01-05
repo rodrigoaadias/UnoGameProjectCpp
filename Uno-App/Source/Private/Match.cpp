@@ -1,4 +1,5 @@
 #include "Public/Match.h"
+#include "Statics.h"
 #include "Core/Core.h"
 #include "Core/Public/Engine.h"
 #include "Public/DeckController.h"
@@ -9,9 +10,9 @@
 #include "Public/MustBuyCard.h"
 
 Match::Match(const std::string& matchName)
-    : Entity{matchName}, CurrentTurn{0}, Flow{ETurnFlow::Clockwise}
+    : Entity{matchName}, Flow{ETurnFlow::Clockwise}
 {
-    JoinedPlayers.reserve(10);
+    JoinedPlayers.reserve(MAX_NUMBER_OF_PLAYERS);
 }
 
 void Match::Begin()
@@ -44,17 +45,17 @@ void Match::StartNewMatch()
 
 int Match::ReadNumberOfPlayers()
 {
-    int numPlayers = Core::GetInput<int>("How many players will join this match? (Must be between 2 and 10): ");
-    while (numPlayers < 2 || numPlayers > 10)
+    const int numPlayers = Core::GetInput<int>("How many players will join this match? (Must be between 2 and " + std::to_string(MAX_NUMBER_OF_PLAYERS) + "): ");
+    while (numPlayers < 2 || numPlayers > MAX_NUMBER_OF_PLAYERS)
     {
-        Core::LogMessage(std::to_string(numPlayers) + " players are not allowed. Select a number between 2 and 10");
-        numPlayers = Core::GetInput<int>("How many players will join this match? (Must be between 2 and 10): ");
+        Core::LogMessage(std::to_string(numPlayers) + " players are not allowed. Select a number between 2 and " + std::to_string(MAX_NUMBER_OF_PLAYERS));
+        return ReadNumberOfPlayers();
     }
 
     return numPlayers;
 }
 
-void Match::JoinPlayers(const int& number)
+void Match::JoinPlayers(const int number)
 {
     for (int i=0; i < number; i++)
     {
@@ -62,35 +63,35 @@ void Match::JoinPlayers(const int& number)
     }
 }
 
-EntityPtr<Player> Match::CreatePlayer(const int& index)
+EntityPtr<Player> Match::CreatePlayer(const int index)
 {
     const auto playerName = Core::GetInput<std::string>("Player " + std::to_string(index) + ": What's your name? ");
-    for (EntityPtr<Player> current : JoinedPlayers)
+    for (const EntityPtr<Player>& currentPlayer : JoinedPlayers)
     {
-        if(current->GetName() == playerName)
+        if(currentPlayer->GetName() == playerName)
         {
             Core::LogMessage("You can't assign your name as " + playerName + " because another player already has this name");
             return CreatePlayer(index);
         }
     }
 
-    return EntityPtr<Player>::MakeEntityPtr(playerName, index);
+    return Engine::CreateEntity<Player>(playerName, index);
 }
 
 void Match::CreateDeck()
 {
-    Deck = EntityPtr<DeckController>::MakeEntityPtr("Deck Controller");
+    Deck = Engine::CreateEntity<DeckController>("Deck Controller");
 }
 
 void Match::SortCardsToPlayers()
 {
     Deck->ShuffleDeckCards();
 
-    for (auto player : JoinedPlayers)
+    for (const EntityPtr<Player>& player : JoinedPlayers)
     {
         for (int i=0; i < INITIAL_CARDS_PER_PLAYER; i++)
         {
-            player->BuyDeckCard(Deck.get());
+            player->BuyDeckCard(Deck.GetWeakPtr());
         }
     }
 }
@@ -134,24 +135,21 @@ void Match::IncreaseTurn()
 
 EntityPtr<Round> Match::MakeRound()
 {
-    const auto currentPlayerTurn = JoinedPlayers[CurrentPlayerIndex];
     EntityPtr<Round> newRound;
 
-    // execute pre turn actions
-    const auto tossedCard = Deck->GetLastTossedCard();
+    const EntityPtr<Card>& tossedCard = Deck->GetLastTossedCard();
     if(tossedCard.IsValid() && tossedCard != LastCard)
     {
         const auto customRoundCard = tossedCard.ImplementsInterface<ICustomRoundCard>();
         if (customRoundCard != nullptr)
         {
-            newRound = customRoundCard->GetCustomRound(CurrentTurn);
+            newRound = customRoundCard->GenerateCustomRound(CurrentTurn);
         }
     }
 
-    // Run turn
     if(!newRound.IsValid())
     {
-        newRound = EntityPtr<Round>::MakeEntityPtr(CurrentTurn);
+        newRound = Engine::CreateEntity<Round>(CurrentTurn);
     }
 
     return newRound;
@@ -159,7 +157,7 @@ EntityPtr<Round> Match::MakeRound()
 
 void Match::PlayTurn()
 {
-    const auto currentPlayerTurn = JoinedPlayers[CurrentPlayerIndex];
+    const EntityPtr<Player>& currentPlayerTurn = JoinedPlayers[CurrentPlayerIndex];
 
     EntityPtr<Round> newRound = MakeRound();
     LastCard = Deck->GetLastTossedCard();
@@ -168,7 +166,9 @@ void Match::PlayTurn()
 
     if(currentPlayerTurn->GetCards().empty())
     {
-        Core::WaitAnyKey("CONGRATULATIONS " + currentPlayerTurn->GetName() + "!!! You won the game!");
+        Core::WaitAnyKey(GetConsoleColorCode(EColor::Green) +
+            "CONGRATULATIONS " + currentPlayerTurn->GetName() + "!!! You won the game!" +
+            GetConsoleColorCode(EColor::None));
         FinishMatch();
         return;
     }
@@ -186,20 +186,15 @@ void Match::ReverseFlow()
     Core::WaitAnyKey("THE FLOW OF THE GAME HAS CHANGED! New flow: " + GetFlowName(Flow));
 }
 
-bool Match::IsMatchEnded() const
-{
-    return MatchFinished;
-}
-
 void Match::Restart()
 {
-    for (EntityPtr<Player>& player : JoinedPlayers)
+    for (const EntityPtr<Player>& player : JoinedPlayers)
     {
-        for (EntityPtr<Card>& playerCard : player->GetCards())
+        for (const EntityPtr<Card>& playerCard : player->GetCards())
         {
             Deck->AddCardToDeck(playerCard);
         }
-        player->GetCards().clear();
+        player->GetCardsWrite().clear();
     }
 
     Deck->ShuffleTossedCardsBackToDeck();
@@ -212,17 +207,22 @@ void Match::Restart()
     MatchReady = true; 
 }
 
-int Match::GetPlayersAmount() const
+bool Match::IsMatchEnded() const
 {
-    return JoinedPlayers.size();
+    return MatchFinished;
 }
 
-EntityPtr<Player> Match::GetCurrentPlayer() const
+int Match::GetPlayersAmount() const
+{
+    return static_cast<int>(JoinedPlayers.size());
+}
+
+const EntityPtr<Player>& Match::GetCurrentPlayer() const
 {
     return JoinedPlayers.at(CurrentPlayerIndex);
 }
 
-std::vector<EntityPtr<Player>> Match::GetPlayers() const
+const std::vector<EntityPtr<Player>>& Match::GetPlayers() const
 {
     return JoinedPlayers;
 }
