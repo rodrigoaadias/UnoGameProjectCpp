@@ -3,7 +3,6 @@
 #include "Core/Public/Entity.h"
 
 class Match;
-class Player;
 
 class GameLifecycleController : public Entity
 {

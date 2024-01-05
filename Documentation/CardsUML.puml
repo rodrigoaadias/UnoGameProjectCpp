@@ -7,23 +7,39 @@ package Core{
 }
 
 package UnoApp{
-    enum Color{
+    enum EColor{
         Blue
         Yellow
         Red
-        Green
+        Green,
+        None
     }
 
     abstract class Card{
-        Color color;
+        -EColor color;
+        -static std::string GetDisplayTypename(const Card& card);
+        -static void DrawCardsFromTo(const std::vector<EntityPtr<Card>>& cards, bool drawOption, int from, int to);
+        -static void AddToLineIndex(std::vector<std::string>& lines, const std::string& text, int i);
+        +EColor GetColor() const;    
+        +virtual std::string GetCardTypeName() const;
+        +virtual bool CanTossCardOnMe(const EntityPtr<Card>& other) const;
+        +static std::vector<std::string> GetDisplayCard(const Card& card);
+        +static void DrawCards(const std::vector<EntityPtr<Card>>& cards, bool drawOption);
+        +void Draw() const;
     }
 
     class NumberCard{
-        int number;
+        -int Number;
+        +int GetNumber() const;
     }
 
     class MustBuyCard{
-        int amountToBuy;
+        -int AmountToBuy;
+        -int Cumulated;
+        -bool IsInRound;
+        +int GetAmountToBuy() const;
+        +void Cumulate(int amount);
+        +void ClearRound();
     }
 
     class ReverseCard{
@@ -31,33 +47,38 @@ package UnoApp{
 
     class JumpCard{
     }
-
-    Entity <|-- Card
-    Color <- Card
-    Card <|--- NumberCard
-    Card <|--- MustBuyCard
-    Card <|--- ReverseCard
-    Card <|--- JumpCard
-
-    interface IAction{
-        void Execute(Match CurrentMatch);
-    }
-
-    interface ITossAction{    
-        void Execute(Match CurrentMatch);
-    }
-
-    MustBuyCard ..|> IAction
-    JumpCard ..|> IAction
-    ReverseCard ..|> ITossAction
     
-    class Match{
+    class SwitchHandCard{
     }
 
-    note bottom of ITossAction : This is supposed to be called before the turn ends
-    note bottom of IAction : This is supposed to be called before the turn begins
+    Entity <|.. Card
+    EColor <- Card
+    Card <|... NumberCard
+    Card <|... MustBuyCard
+    Card <|... ReverseCard
+    Card <|... JumpCard
+    Card <|... SwitchHandCard
 
-    IAction --> Match
-    ITossAction --> Match
+    interface ICustomRoundCard{
+        EntityPtr<Round> GenerateCustomRound(int roundIndex)
+    }
+
+    interface IPostRoundAction{    
+        void Execute(IMatchContext* CurrentMatch);
+    }
+    
+    interface IMatchContext{}
+
+    MustBuyCard ..|> ICustomRoundCard
+    JumpCard ..|> ICustomRoundCard
+    ReverseCard ..|> IPostRoundAction
+    SwitchHandCard ..|> IPostRoundAction
+
+    ICustomRoundCard --> Round
+    IPostRoundAction --> IMatchContext
+    SwitchHandCard --> Player
+
+    note bottom of IPostRoundAction : This is supposed to be called before the turn ends
+    note bottom of ICustomRoundCard : This creates a custom round for the turn
 }
 @enduml

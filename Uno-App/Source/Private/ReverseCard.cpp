@@ -23,7 +23,7 @@ bool ReverseCard::CanTossCardOnMe(const EntityPtr<Card>& other) const
     return Card::CanTossCardOnMe(other);
 }
 
-void ReverseCard::Execute(Match* currentMatch)
+void ReverseCard::Execute(IMatchContext* currentMatch)
 {
     currentMatch->ReverseFlow();
 }

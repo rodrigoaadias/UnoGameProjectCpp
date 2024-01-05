@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "ETurnFlow.h"
+#include "IMatchContext.h"
 #include "Core/EntityPtr.h"
 #include "Core/Public/Entity.h"
 
@@ -9,7 +10,7 @@ class Card;
 class Player;
 class DeckController;
 
-class Match : public Entity
+class Match : public Entity, public IMatchContext
 {
     int CurrentTurn{0};
     int CurrentPlayerIndex{0};
@@ -43,11 +44,11 @@ public:
 
     void StartNewMatch();
 
-    void ReverseFlow();
+    void ReverseFlow() override;
     void Restart();
 
     [[nodiscard]] bool IsMatchEnded() const;
-    [[nodiscard]] int GetPlayersAmount() const;
-    [[nodiscard]] const EntityPtr<Player>& GetCurrentPlayer() const;
-    [[nodiscard]] const std::vector<EntityPtr<Player>>& GetPlayers() const;
+    [[nodiscard]] int GetPlayersAmount() const override;
+    [[nodiscard]] const EntityPtr<Player>& GetCurrentPlayer() const override;
+    [[nodiscard]] const std::vector<EntityPtr<Player>>& GetPlayers() const override;
 };

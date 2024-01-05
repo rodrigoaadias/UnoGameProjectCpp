@@ -48,9 +48,83 @@ Acceptable comments are:
   * Do not use extensively. If the method is self-explanatory, there’s no need for a summary
 * Brief explanation of complex algorithms that are very hard to understand
 
-## Architecture
-The Uno-Core library must be used as a tool to help developers to allocate and deallocate new objects in the Heap. If any object must be allocated in the Heap, make this class always derive from `Core::Entity`.
-For more information about the project architecture, please check the images files inside `Documentation` directory.
+# Project Architecture
+
+## Uno-Core
+The Uno-Core library must be used as a tool to help developers to create entities that must have a lifecycle and routines like `Begin()` and `Tick()`.
+
+### Entity
+Entity is anything in the game that should be instantiated and receive `Begin` and `Tick` calls.
+
+If your class is an entity that has a Lifetime cycle and can be destroyed anytime in the game, make this class always derive from `Core::Entity`.
+
+### Create entity object
+Use the static call `Engine::CreateEntity<TEntityType>()` to create a new object of that class.
+
+Using `Engine::CreateEntity<TEntityType>` will register the entity to receive `Begin()` and `Tick()` calls and it will return a handle class called `EntityPtr<TEntityType>`.
+
+### EntityPtr
+The `EntityPtr` is a core functionality of this project and it's mandatory to be used with Entities in the game. This is a handler that makes all memory allocations easier. It manipulates the object created in a shared pointer, that can be destroyed any time in your code. It also has a `IsValid()` method to check if the object is still alive.
+
+The `EntityPtr` can be copied along the code many times, and when you destroy the `Entity` that the `EntityPtr` handles, all `EntityPtr` objects will know that the `Entity` is destroyed. It is helpful to handle with situations that an object doesn't exist anymore.
+
+If a null ref of your entity is expected to happen in some situation, a good approach is to use `IsValid()` check to ensure that your Entity is still alive and don't get an undesired null pointer exception.
+
+### Destroy entities
+Use the static method `Engine::Destroy(EntityPtr<Entity>& entityToRemove)` to destroy an entity. It will erase your entity from memory.
+
+EntityPtr also knows when the Entity is out of scope and automatically deletes it from memory. It has the same functionality as `shared_ptr` that deletes an object from memory when out of scope.
+
+With this in mind, you can safely use `EntityPtr` across your code and be sure that it will be destroyed at least at the end of the game execution.
+
+## Uno Architecture
+In this project, all classes are derived from `Entity` and they have the lifecycle handled by the Core library.
+For more information about the project architecture, please check the UML diagram images files inside `Documentation` directory.
+
+### GamelifecycleController
+This is the controller responsible for creating a match and handle restart match options
+
+### Match
+Creates and manage all classes and objects used in a match, like players, cards and turns.
+
+### Round
+This is the class that handles how a round must be played. We have some derived rounds, like `JumpRound` that forces player skip its turn.
+
+### DeckController
+It creates all cards that will be used in the game. It manages the deck cards, the discard pile and also shuffle cards when needed.
+
+### Player
+This class represents a player in the game. It store the cards player has in hand, how to play a turn, the yell conditions, and the play options.
+
+### Card
+It's the base class that represents a card in the game. All cards in this game must be derived from `Card`. It also have some static functions to help draw the card in the Console.
+
+## How-to
+### Create a new Card type
+If you want to add a new card type to this project, with a specific behavior, you need to do the following steps:
+* Make your card class derive from `Card`.
+* Implement the pure virtual methods.
+* If you have any specific rule to check if a card can be tossed on it, you can override the method `CanTossCardOnMe(const EntityPtr<Card>& other)`
+* If your card is a special card that change some behavior in the normal round flow, you have two options to implement it, based on what the card will do.
+    * **If the card must change a post round behaviour:** make this card also extends from interface `IPostRoundAction` and then implement what kind of action it must do. Examples of this usage: Switch Hand and Reverse cards. Both cards apply an action that must be done immediately after the player toss the card and before the next round.
+    * **If the card must change the round:** make this card also extends from interface `ICustomRoundCard` and then return which round should be run for that turn. Examples of this usage: Jump and +2 cards. These both cards change the behavior of the next round, or in other words, how the round will be executed. Both rounds is not a normal round that a player can select a card to toss.
+    * You can implement both interfaces if needed.
+* In `DeckController`, add the logic to create the amount of the new cards that should be added in the deck inside the method `CreateCards()`
+* That's it, your card is ready to be used in the game.
+
+### Create a custom Round
+In some cases, a card can change how the next round will behave. This is very common in a Uno game. 
+
+An example of this is when a player toss a Jump card. The next player must skip its turn.
+
+To create a new round, do the following steps:
+* Make your round class derive from `Round`
+* Override the `RunRound` method and write here how the round should behave. Note that this method receives the current player turn and a reference to the deck. Use it to manipulate the round behaviour. You can look at `MustBuyRound` class to see how to a custom round behaviour can be implemented.
+
+### Check if an object implements an Interface
+As explained before, it's mandatory that your entity uses an EntityPtr. And another feature of EntityPtr is that it has a method to check if the Entity implements any interface.
+
+Use `ImplementsInterface<TInterfaceType>()` method to check if the Entity implements the interface you want. It returns a raw pointer to the interface. If it's `NULL`, it means that your Entity doesn't implements it.
 
 ## License
 - GNU GENERAL PUBLIC LICENSE for this repository (see `LICENSE.txt` for more details)

@@ -7,5 +7,5 @@ class SwitchHandCard : public Card, public IPostRoundAction
 public:
     SwitchHandCard();
     std::string GetCardTypeName() const override;
-    void Execute(Match* currentMatch) override;
+    void Execute(IMatchContext* currentMatch) override;
 };

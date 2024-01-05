@@ -8,5 +8,5 @@ class MustBuyRound : public Round
 public:
     MustBuyRound(int index, int amountToBuy);
 
-    void RunRound(const EntityPtr<Player>& currentPlayer, const EntityPtr<DeckController>& deckController, ETurnFlow turnFlow) override;
+    void RunRound(const EntityPtr<Player>& currentPlayer, const EntityPtr<DeckController>& deckController, std::string_view turnFlowName) override;
 };

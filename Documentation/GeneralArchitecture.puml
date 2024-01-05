@@ -4,103 +4,164 @@
 package Core
 {
     class Engine{
-        static std::vector<std::weak_ptr<Entity>> Entities;
-        static void Reserve(int size);
-        static void InitEntity(const std::weak_ptr<Entity>& newEntity);
-        static void ClearEntities();
-        static void Destroy(EntityPtr<Entity> entityToRemove);
-        static void Tick();
+        +static std::vector<std::weak_ptr<Entity>> Entities;
+        +static EntityPtr<TEntityType> CreateEntity(TArgs&& ...args)
+        +static void Reserve(int size);
+        +static void InitEntity(const std::weak_ptr<Entity>& newEntity);
+        +static void ClearEntities();
+        +static void Destroy(EntityPtr<Entity> entityToRemove);
+        +static void Tick();
     }
 
     class Entity{        
-        Entity(const std::string& EntityName);
-        const std::string& GetName();
-        void Begin();
-        void Tick();
+        +Entity(const std::string& EntityName);
+        +const std::string& GetName();
+        +void Begin();
+        +void Tick();
     }
 
     Engine --> Entity
+    Engine --> EntityPtr
 
     class EntityPtr{
-        std::shared_ptr<Entity>* Instance;
-        std::shared_ptr<int> RefCount;
-        std::weak_ptr<TElement> get();
-        bool IsValid();
-        void reset();
+        +std::shared_ptr<Entity>* Instance;
+        +std::shared_ptr<int> RefCount;
+        +TInterface* ImplementsInterface<TInterface>() const
+        +std::weak_ptr<TEntityType> GetWeakPtr();
+        +TEntityType& GetRef()
+        +bool IsValid();
+        +void reset();
     }
 
     class Core{
-        void RunEngine();
-        void CloseApp();
+        +static void RunEngine();
+        +static void CloseApp();
+        +static GetInput<TData>(const std::string& message);
+        +static void WaitAnyKey(const std::string& message);
+        +static void LogMessage(const std::string& message);
+        +static void LogError(const std::string& errorMessage);
+        +static int RandomRange(int min, int maxInclusive);
+        +static void ClearConsole();
     }
 
     Core --> Engine
-    EntityPtr -> Entity
 }
 
 package UnoApp
 {
     class GameLifecycleController{
-        EntityPtr<Match> CurrentMatch;
-        void StartNewGame();
-        void Replay();
-        void CloseGame();
+        -EntityPtr<Match> CurrentMatch;
+        -void ShowRestartOptions();
+        +void CreateMatch();
     }
     
     class Player{
-        std::vector<EntityPtr<Card>> CardsOnHand;
-        bool HasYelled;
-        int GetAmountOfCardsOnHand();
-        bool PlayTurn();
-        void BuyCards();
-        void BuyDeckCard();
-        void BuyTossedCard();
-        CanYell();
-        Yell();
+        -int Index;
+        -bool HasYelled;
+        -std::vector<EntityPtr<Card>> CardsOnHand;
+        -EntityPtr<Card> PopCardFrom(uint32_t index);                                     
+        -void TryYell();
+        -bool CanYell() const;
+        -void Yell();
+        -void TossValidCard(DeckController, uint32_t choice);
+        -void BuyCardAndTryToss(DeckController, TossedCard);
+        -void SelectCardToToss(DeckController, TossedCard);
+        #void AddCardToHand(EntityPtr<Card> card);
+        +std::string GetDisplayName() const;
+        +bool CanTossCard(const EntityPtr<Card>& lastTossedCard) const;
+        +void BuyDeckCard(const std::weak_ptr<DeckController>& deckController);
+        +void PlayTurn(const std::weak_ptr<DeckController>& deckController);
+        +void SwitchHandsWith(EntityPtr<Player>& other);
+        +std::string ToString() const;
+        +const std::vector<EntityPtr<Card>>& GetCards() const;
+        +std::vector<EntityPtr<Card>>& GetCardsWrite();
     }
 
     class DeckController{
-        const std::vector<EntityPtr<Card>> AllCards;
-        std::stack<EntityPtr<Card>> TossedCards;
-        std::stack<EntityPtr<Card>> CardsOnDeck;
-        void CreateCards();
-        void ShuffleDeckCards();
-        void AddCardToDeck(Card* card);
-        bool IsDeckEmpty();
-        void ShuffleTossedCardsBackToDeck();
-        std::weak_ptr<Card> GetTopCard();
+        -static constexpr int CARDS_AMOUNT_CAPACITY;
+        -static constexpr int NUMBER_CARDS_LIMIT;
+        -static constexpr int SPECIAL_CARDS_BY_COLOR_AMOUNT;
+        -static constexpr int EXTRA_CARD_AMOUNT;
+        -EntityPtr<Card> EmptyCard{};
+        -std::vector<EntityPtr<Card>> AllCards;
+        -std::stack<EntityPtr<Card>> DeckCards;
+        -std::stack<EntityPtr<Card>> TossedCards;
+        -void CreateCards();
+        -void CreateNumberCardInAllColors(int number);
+        -void CreateNumberCardOfColor(int number, EColor color);
+        -void CreateSpecialCardsByColor(EColor color);
+        -void CreateExtraCards();
+        -void EmplaceCreatedCard(const EntityPtr<Card>& card);
+        -const EntityPtr<Card>& PopFromStack();
+        +void ShuffleDeckCards();
+        +void AddCardToDeck(EntityPtr<Card> card);
+        +bool IsDeckEmpty() const;
+        +void ShuffleTossedCardsBackToDeck();
+        +void AddCardToTable(EntityPtr<Card> card);
+        +EntityPtr<Card> BuyCardFromDeck();
+        +const EntityPtr<Card>& GetLastTossedCard() const;
+        +int GetAmountOfDeckCards() const;
+        +int GetAmountOfTossedCards() const;
     }
 
-    enum TurnFlow{
+    enum ETurnFlow{
         CLOCKWISE
         ANTI-CLOCKWISE
     }
+    
+    enum EColor{
+        Blue,
+        Yellow,
+        Red,
+        Green,
+        None
+    }
 
     class Match{    
-        int CurrentTurn;
-        TurnFlow Flow;
-        std::vector<EntityPtr<Player>> JoinedPlayers;        
-        void StartNewMatch();
-        void JoinPlayers();
-        void CreateDeck();
-        void SortCardsToPlayers();
-        void SortFirstPlayerTurn();
-        void PlayTurn();
-        void ExecuteCardAction();      
-        void ExecuteCardTossAction();  
-        void SkipTurn();
-        void ReverseFlow();
-        bool IsMatchEnded();
-        void FinishMatch();
+        -int CurrentTurn;
+        -int CurrentPlayerIndex;
+        -int PlayersCount;
+        -ETurnFlow Flow;
+        -bool MatchReady;
+        -bool MatchFinished;
+        -std::vector<EntityPtr<Player>> JoinedPlayers;  
+        -EntityPtr<DeckController> Deck;      
+        -void StartNewMatch();
+        -EntityPtr<Player> CreatePlayer(int index);
+        -void PostRoundAction(const EntityPtr<Card>& tossedCard);
+        -void IncreaseTurn();
+        -EntityPtr<Round> MakeRound();
+        -EntityPtr<Card> LastCard;        
+        -void JoinPlayers(int number);
+        -void CreateDeck();
+        -void SortCardsToPlayers();
+        -void SetupTurn();
+        -void PlayTurn();
+        -void FinishMatch();
+        -int ReadNumberOfPlayers();
+        +void StartNewMatch();    
+        +void Restart();    
+        +bool IsMatchEnded() const;
     }
     
     class Round{
-        int RoundIndex
-        std::weak_ptr<Player> CurrentPlayer;
-        std::weak_ptr<DeckController> Deck;
+        #int RoundIndex
+        #void DrawTurn(Player, DeckController, TurnFlowName) const
+        +virtual void RunRound(Player, DeckController, TurnFlowName) const
     }
 
     class Card{
+    }
+
+    interface IPostRoundAction{}
+    
+    interface ICustomRoundCard{}
+    
+    interface IMatchContext{
+        +virtual void ReverseFlow();
+        +virtual int GetPlayersAmount() const;
+        +virtual const EntityPtr<Player>& GetCurrentPlayer() const;
+        +virtual const std::vector<EntityPtr<Player>>& GetPlayers() const;
     }
 
     Entity <|-- GameLifecycleController
@@ -113,12 +174,22 @@ package UnoApp
     Player -> DeckController
     Match ---> Player
     Match ---> DeckController
-    Match -> TurnFlow
+    Match -> ETurnFlow
     Match --> Card
     Match --> Round
+    Match --> IPostRoundAction
+    IMatchContext <|-Match
+    IMatchContext <-- IPostRoundAction
+    ICustomRoundCard --> Round
+    Match --> ICustomRoundCard
     Round --> Player
     Round --> DeckController
     Round -> Card
+    Card -> EColor
+    Card <- DeckController
+    EColor <- DeckController
+    EColor <- Match
+    Card <- Player
 }
 
 @enduml

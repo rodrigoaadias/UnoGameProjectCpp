@@ -8,5 +8,5 @@ public:
     ReverseCard(EColor color);
     std::string GetCardTypeName() const override;
     [[nodiscard]] bool CanTossCardOnMe(const EntityPtr<Card>& other) const override;
-    void Execute(Match* currentMatch) override;
+    void Execute(IMatchContext* currentMatch) override;
 };

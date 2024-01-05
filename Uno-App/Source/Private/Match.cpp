@@ -7,7 +7,6 @@
 #include "Public/ICustomRoundCard.h"
 #include "Public/Round.h"
 #include "Public/IPostRoundAction.h"
-#include "Public/MustBuyCard.h"
 
 Match::Match(const std::string& matchName)
     : Entity{matchName}, Flow{ETurnFlow::Clockwise}
@@ -162,7 +161,7 @@ void Match::PlayTurn()
     EntityPtr<Round> newRound = MakeRound();
     LastCard = Deck->GetLastTossedCard();
 
-    newRound->RunRound(currentPlayerTurn, Deck, Flow);
+    newRound->RunRound(currentPlayerTurn, Deck, GetFlowName(Flow));
 
     if(currentPlayerTurn->GetCards().empty())
     {

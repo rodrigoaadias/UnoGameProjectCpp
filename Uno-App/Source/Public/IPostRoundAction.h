@@ -1,5 +1,5 @@
 #pragma once
-#include "Match.h"
+#include "IMatchContext.h"
 
 class IPostRoundAction
 {
@@ -11,6 +11,6 @@ public:
     IPostRoundAction& operator = (const IPostRoundAction& other) = delete;
     IPostRoundAction& operator = (const IPostRoundAction&& other) = delete;
 
-    virtual void Execute(Match* currentMatch) = 0;
+    virtual void Execute(IMatchContext* currentMatch) = 0;
     virtual ~IPostRoundAction() = default;
 };
