@@ -1,17 +1,13 @@
 #pragma once
 #include "Round.h"
+#include "Core/Core.h"
 #include "Core/EntityPtr.h"
 
 class ICustomRoundCard
 {    
 public:
-    ICustomRoundCard() = default;
-    ICustomRoundCard(ICustomRoundCard& other) = delete;
-    ICustomRoundCard(ICustomRoundCard&& other) = delete;
+    NO_COPY_MOVE(ICustomRoundCard)
+    VIRTUAL_DESTRUCTOR(ICustomRoundCard)
 
-    ICustomRoundCard& operator = (const ICustomRoundCard& other) = delete;
-    ICustomRoundCard& operator = (const ICustomRoundCard&& other) = delete;    
-
-    virtual EntityPtr<Round> GenerateCustomRound(int roundIndex) = 0;    
-    virtual ~ICustomRoundCard() = default;
+    virtual EntityPtr<Round> GenerateCustomRound(int roundIndex) = 0;        
 };

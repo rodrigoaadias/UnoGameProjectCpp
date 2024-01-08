@@ -4,13 +4,8 @@
 class IPostRoundAction
 {
 public:
-    IPostRoundAction() = default;
-    IPostRoundAction(const IPostRoundAction& other) = delete;
-    IPostRoundAction(const IPostRoundAction&& other) = delete;
-
-    IPostRoundAction& operator = (const IPostRoundAction& other) = delete;
-    IPostRoundAction& operator = (const IPostRoundAction&& other) = delete;
+    NO_COPY_MOVE(IPostRoundAction)
+    VIRTUAL_DESTRUCTOR(IPostRoundAction)
 
     virtual void Execute(IMatchContext* currentMatch) = 0;
-    virtual ~IPostRoundAction() = default;
 };
