@@ -109,7 +109,7 @@ public:
         return std::weak_ptr<TElement>{ *Instance }; 
     }
 
-    TElement& GetRef()
+    TElement& GetRef() const
     {
         assert(IsValid());
         return **Instance;
