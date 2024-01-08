@@ -3,6 +3,7 @@
 #include "Public/MustBuyCard.h"
 #include "Public/Player.h"
 #include "Core/Core.h"
+#include "Public/Printer.h"
 
 MustBuyRound::MustBuyRound(const int index, const int amountToBuy)
     :Round{index}, AmountToBuy{amountToBuy}
@@ -20,7 +21,7 @@ void MustBuyRound::BuyCumulatedCards(const EntityPtr<Player>& currentPlayer, con
     }
 
     Core::LogMessage(currentPlayer->GetName() + " has bought the following cards: ");
-    Card::DrawCards(cardsToDraw);
+    Printer::DrawCards(cardsToDraw);
 }
 
 void MustBuyRound::RunRound(const EntityPtr<Player>& currentPlayer, const EntityPtr<DeckController>& deckController, const std::string_view turnFlowName)

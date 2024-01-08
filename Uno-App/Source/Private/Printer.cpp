@@ -3,6 +3,31 @@
 #include "Core/Core.h"
 #include "Public/Card.h"
 
+std::string Printer::GetDisplayTypename(const Card& card)
+{
+    std::string typeName = card.GetCardTypeName();
+    bool bBefore = false;
+    while (typeName.length() < LINE_WIDTH-2)
+    {
+        if(bBefore)
+        {
+            typeName.insert(typeName.begin(), ' ');
+        }
+        else
+        {
+            typeName.append(" ");            
+        }
+
+        bBefore = !bBefore;
+    }
+    if(typeName.length() > LINE_WIDTH - 2)
+    {
+        typeName.erase(typeName.begin() + LINE_WIDTH - 2, typeName.end());
+    }
+
+    return typeName;
+}
+
 std::vector<std::string> Printer::GetDisplayCard(const Card& card)
 {
     std::vector<std::string> returnValue;
