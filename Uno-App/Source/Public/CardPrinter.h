@@ -5,7 +5,7 @@
 
 class Card;
 
-class Printer
+class CardPrinter
 {
     static std::string GetDisplayTypename(const Card& card);
     static void DrawCardsFromTo(const std::vector<EntityPtr<Card>>& cards, bool drawOption, int from, int to);

@@ -2,7 +2,7 @@
 
 #include "Core/Core.h"
 #include "Public/DeckController.h"
-#include "Public/Printer.h"
+#include "Public/CardPrinter.h"
 
 Player::Player(const std::string& name, const int index)
     :Entity(name), Index{index}, HasYelled{false}
@@ -74,7 +74,7 @@ void Player::TossValidCard(const std::weak_ptr<DeckController>& deckController, 
     deckController.lock()->AddCardToTable(selectedCard);
 
     Core::LogMessage(GetDisplayName() + " tossed the following card:");
-    Printer::DrawUniqueCard(selectedCard.GetRef());
+    CardPrinter::DrawUniqueCard(selectedCard.GetRef());
 }
 
 void Player::BuyCardAndTryToss(const std::weak_ptr<DeckController>& deckController, const EntityPtr<Card>& tossedCard)
@@ -84,7 +84,7 @@ void Player::BuyCardAndTryToss(const std::weak_ptr<DeckController>& deckControll
     Core::LogMessage(GetDisplayName() + " has bought the following card: ");
     const EntityPtr<Card>& boughtCard = CardsOnHand.at(static_cast<int>(CardsOnHand.size()) - 1);
 
-    Printer::DrawUniqueCard(boughtCard.GetRef());
+    CardPrinter::DrawUniqueCard(boughtCard.GetRef());
 
     if(tossedCard->CanTossCardOnMe(boughtCard))
     {
@@ -145,7 +145,7 @@ void Player::PlayTurn(const std::weak_ptr<DeckController>& deckController)
             const std::vector cardsToDraw = {CardsOnHand.at(CardsOnHand.size() - 1),
                                 CardsOnHand.at(CardsOnHand.size() - 2)};
 
-            Printer::DrawCards(cardsToDraw);
+            CardPrinter::DrawCards(cardsToDraw);
             return;
         }
 

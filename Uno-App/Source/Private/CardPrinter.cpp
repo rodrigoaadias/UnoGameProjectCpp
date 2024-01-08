@@ -1,9 +1,9 @@
-#include "Public/Printer.h"
+#include "Public/CardPrinter.h"
 #include "Statics.h"
 #include "Core/Core.h"
 #include "Public/Card.h"
 
-std::string Printer::GetDisplayTypename(const Card& card)
+std::string CardPrinter::GetDisplayTypename(const Card& card)
 {
     std::string typeName = card.GetCardTypeName();
     bool bBefore = false;
@@ -28,7 +28,7 @@ std::string Printer::GetDisplayTypename(const Card& card)
     return typeName;
 }
 
-std::vector<std::string> Printer::GetDisplayCard(const Card& card)
+std::vector<std::string> CardPrinter::GetDisplayCard(const Card& card)
 {
     std::vector<std::string> returnValue;
     returnValue.reserve(COLUMN_HEIGHT);
@@ -74,7 +74,7 @@ std::vector<std::string> Printer::GetDisplayCard(const Card& card)
     return returnValue;
 }
 
-void Printer::DrawUniqueCard(const Card& card)
+void CardPrinter::DrawUniqueCard(const Card& card)
 {
     const std::vector<std::string> stringVector = GetDisplayCard(card);
     for (const auto& line : stringVector)
@@ -83,7 +83,7 @@ void Printer::DrawUniqueCard(const Card& card)
     }
 }
 
-void Printer::AddToLineIndex(std::vector<std::string>& lines, const std::string& text, const int i)
+void CardPrinter::AddToLineIndex(std::vector<std::string>& lines, const std::string& text, const int i)
 {
     if(static_cast<int>(lines.size()) <= i)
     {               
@@ -95,7 +95,7 @@ void Printer::AddToLineIndex(std::vector<std::string>& lines, const std::string&
     }
 }
 
-void Printer::DrawCardsFromTo(const std::vector<EntityPtr<Card>>& cards, const bool drawOption,
+void CardPrinter::DrawCardsFromTo(const std::vector<EntityPtr<Card>>& cards, const bool drawOption,
     const int from, const int to)
 {
     std::vector<std::string> lines;
@@ -113,7 +113,7 @@ void Printer::DrawCardsFromTo(const std::vector<EntityPtr<Card>>& cards, const b
         }
 
         std::string spaceBetweenCards = "      ";
-        std::vector<std::string> cardDisplay = Printer::GetDisplayCard(card.GetRef());
+        std::vector<std::string> cardDisplay = CardPrinter::GetDisplayCard(card.GetRef());
         if(drawOption)
         {
             std::string space = k < 10 ? "  " : " ";
@@ -132,7 +132,7 @@ void Printer::DrawCardsFromTo(const std::vector<EntityPtr<Card>>& cards, const b
     }
 }
 
-void Printer::DrawCards(const std::vector<EntityPtr<Card>>& cards, const bool drawOption)
+void CardPrinter::DrawCards(const std::vector<EntityPtr<Card>>& cards, const bool drawOption)
 {
     for (int i=0; i < static_cast<int>(cards.size()); i+=CARDS_PER_LINE)
     {

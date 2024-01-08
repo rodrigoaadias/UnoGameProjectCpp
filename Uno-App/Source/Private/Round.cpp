@@ -3,7 +3,7 @@
 #include "Public/Card.h"
 #include "Public/Player.h"
 #include "Core/Core.h"
-#include "Public/Printer.h"
+#include "Public/CardPrinter.h"
 #include <sstream>
 
 Round::Round(const int index)
@@ -34,7 +34,7 @@ void Round::DrawTurn(const EntityPtr<Player>& player, const EntityPtr<DeckContro
         std::vector<EntityPtr<Card>> cards;
         cards.emplace_back(tableCard);
 
-        Printer::DrawCards(cards);
+        CardPrinter::DrawCards(cards);
     }
     else
     {
@@ -44,6 +44,6 @@ void Round::DrawTurn(const EntityPtr<Player>& player, const EntityPtr<DeckContro
     std::cout << "\n\n\n";
     Core::LogMessage(player->GetName() + " - your current cards: ");
 
-    Printer::DrawCards(player->GetCards(), true);
+    CardPrinter::DrawCards(player->GetCards(), true);
     std::cout << "\n";
 }
